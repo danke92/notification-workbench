@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ★ 修改：浏览器标签页标题 -->
+  <title>蛋壳egg · 个人主页</title>
+  <meta name="description" content="蛋壳egg 的个人主页：关于我、技能、项目与博客。">
+  <meta property="og:title" content="蛋壳egg · 个人主页">
+  <meta property="og:description" content="关于我、技能、项目与博客。">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+
+  <!-- 背景光斑装饰 -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <!-- ===================== 顶部导航 ===================== -->
+  <header class="site-nav" id="siteNav">
+    <nav class="container nav-inner">
+      <!-- ★ 修改：导航栏左侧的名字 -->
+      <a href="#home" class="logo">&lt;<span>蛋壳egg</span>&gt;</a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#home" class="nav-link active">首页</a></li>
+        <li><a href="#about" class="nav-link">关于</a></li>
+        <li><a href="#skills" class="nav-link">技能</a></li>
+        <li><a href="#projects" class="nav-link">项目</a></li>
+        <li><a href="#blog" class="nav-link">博客</a></li>
+        <li><a href="#contact" class="nav-link">联系</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="切换菜单" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===================== 首屏 Hero ===================== -->
+    <section id="home" class="hero">
+      <div class="hero-sun" aria-hidden="true"></div>
+      <div class="hero-grid" aria-hidden="true"></div>
+      <span class="hero-kana" aria-hidden="true">電脳空間・ヴェイパーウェイヴ</span>
+      <div class="container hero-inner">
+
+        <div class="hero-text reveal">
+          <!-- ★ 修改：首屏徽章文字 -->
+          <span class="hero-badge"><span class="dot"></span>欢迎来到蛋壳的赛博空间</span>
+
+          <h1>你好，我是<span class="gradient-text">「蛋壳egg」</span></h1>
+
+          <!-- 打字机文字在 js/main.js 顶部的 TYPING_TEXTS 里改 -->
+          <p class="hero-typing">我是一名 <span id="typing"></span><span class="cursor">|</span></p>
+
+          <!-- ★ 修改：一句话自我介绍 -->
+          <p class="hero-desc">
+            这里放一句你的自我介绍：你做什么、关心什么、正在折腾什么。比如——
+            热爱把想法做成产品的开发者，关注 Web 全栈与 AI 应用，正在经营自己的赛博小站。
+          </p>
+
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">查看我的项目</a>
+            <a href="#contact" class="btn btn-ghost">联系我</a>
+          </div>
+
+          <!-- ★ 修改：把 href="#" 换成你的主页链接 -->
+          <div class="hero-social">
+            <span class="social-label">找到我：</span>
+            <a href="#" class="social-pill">GitHub</a>
+            <a href="#" class="social-pill">掘金</a>
+            <a href="#" class="social-pill">知乎</a>
+            <a href="#" class="social-pill">B 站</a>
+            <a href="mailto:you@example.com" class="social-pill">Email</a>
+          </div>
+        </div>
+
+        <!-- 右侧「代码名片」：内容随意改，是一段伪代码 -->
+        <div class="hero-card reveal">
+          <div class="code-window">
+            <div class="code-titlebar">
+              <span class="tb-dot dot-r"></span><span class="tb-dot dot-y"></span><span class="tb-dot dot-g"></span>
+              <span class="code-filename">profile.exe</span>
+            </div>
+<pre class="code-body"><code><span class="tok-cm">// 这是一张"代码名片"，内容随意修改</span>
+
+<span class="tok-kw">const</span> <span class="tok-var">me</span> <span class="tok-pun">=</span> <span class="tok-pun">{</span>
+  name<span class="tok-pun">:</span>      <span class="tok-str">'蛋壳egg'</span><span class="tok-pun">,</span>
+  role<span class="tok-pun">:</span>      <span class="tok-str">'全栈开发者'</span><span class="tok-pun">,</span>
+  location<span class="tok-pun">:</span>  <span class="tok-str">'中国 · 上海'</span><span class="tok-pun">,</span>
+  stack<span class="tok-pun">:</span>     <span class="tok-pun">[</span><span class="tok-str">'JS / TS'</span><span class="tok-pun">,</span> <span class="tok-str">'Vue'</span><span class="tok-pun">,</span> <span class="tok-str">'Node.js'</span><span class="tok-pun">],</span>
+  learning<span class="tok-pun">:</span>  <span class="tok-str">'AI / LLM 应用开发'</span><span class="tok-pun">,</span>
+  motto<span class="tok-pun">:</span>     <span class="tok-str">'保持好奇，持续构建'</span><span class="tok-pun">,</span>
+<span class="tok-pun">};</span></code></pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================== 关于我 ===================== -->
+    <section id="about" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-index">01</span>
+          <h2>关于我 <span class="section-en">/ About</span></h2>
+        </div>
+        <p class="section-desc reveal">简单介绍一下我自己。</p>
+
+        <div class="about-grid">
+          <div class="about-side reveal">
+            <!-- ★ 修改：头像。把自己的照片放 assets 目录，改这里的 src 即可 -->
+            <div class="avatar-wrap">
+              <img class="avatar" src="assets/avatar.svg" alt="头像（占位）">
+            </div>
+            <ul class="about-info">
+              <li><span class="info-label">坐标</span>中国 · 上海（待替换）</li>
+              <li><span class="info-label">身份</span>开发者 / 学生（待替换）</li>
+              <li><span class="info-label">邮箱</span><a href="mailto:you@example.com">you@example.com</a></li>
+            </ul>
+          </div>
+
+          <div class="about-main reveal">
+            <!-- ★ 修改：自我介绍段落，想写几段都行 -->
+            <p>
+              我是一名开发者（身份占位：学生 / 后端工程师 / 独立开发者……），
+              平时喜欢折腾各种有意思的技术，把脑子里冒出来的想法快速做成能用的东西。
+            </p>
+            <p>
+              工作之余我维护几个小项目，也写写博客记录踩坑经验。
+              相信「输出是最好的输入」，也相信慢慢来比较快。
+            </p>
+            <p>
+              顺便一提：这个页面本身也是我亲手写的——没有用模板，
+              HTML / CSS / JS 一行行敲的，欢迎查看源码。
+            </p>
+
+            <!-- ★ 修改：数字在 data-count 里改，文案在下方改 -->
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-num-row"><span class="stat-num" data-count="3">0</span><span class="stat-plus">+</span></div>
+                <span class="stat-label">年开发经验</span>
+              </div>
+              <div class="stat">
+                <div class="stat-num-row"><span class="stat-num" data-count="12">0</span><span class="stat-plus">+</span></div>
+                <span class="stat-label">个项目</span>
+              </div>
+              <div class="stat">
+                <div class="stat-num-row"><span class="stat-num" data-count="20">0</span><span class="stat-plus">+</span></div>
+                <span class="stat-label">篇博客</span>
+              </div>
+              <div class="stat">
+                <div class="stat-num-row"><span class="stat-num" data-count="999">0</span><span class="stat-plus">+</span></div>
+                <span class="stat-label">杯咖啡</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 技能 ===================== -->
+    <section id="skills" class="section section-alt">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-index">02</span>
+          <h2>技能栈 <span class="section-en">/ Skills</span></h2>
+        </div>
+        <p class="section-desc reveal">我熟悉的工具与技术，以及正在学习的东西。</p>
+
+        <div class="skills-grid">
+          <!-- ★ 修改：四个分组，删改标签随意 -->
+          <div class="skill-group reveal">
+            <h3><span class="skill-icon">◆</span>前端开发</h3>
+            <div class="skill-chips">
+              <span class="chip">HTML / CSS</span>
+              <span class="chip">JavaScript</span>
+              <span class="chip">TypeScript</span>
+              <span class="chip">Vue 3</span>
+              <span class="chip">React</span>
+              <span class="chip">Vite</span>
+              <span class="chip">Tailwind CSS</span>
+            </div>
+          </div>
+
+          <div class="skill-group reveal">
+            <h3><span class="skill-icon">◆</span>后端 & 数据</h3>
+            <div class="skill-chips">
+              <span class="chip">Node.js</span>
+              <span class="chip">Python</span>
+              <span class="chip">FastAPI</span>
+              <span class="chip">MySQL</span>
+              <span class="chip">Redis</span>
+              <span class="chip">RESTful API</span>
+            </div>
+          </div>
+
+          <div class="skill-group reveal">
+            <h3><span class="skill-icon">◆</span>工具 & 运维</h3>
+            <div class="skill-chips">
+              <span class="chip">Git</span>
+              <span class="chip">Docker</span>
+              <span class="chip">Linux</span>
+              <span class="chip">Nginx</span>
+              <span class="chip">CI / CD</span>
+              <span class="chip">VS Code</span>
+            </div>
+          </div>
+
+          <div class="skill-group reveal">
+            <h3><span class="skill-icon">◆</span>正在学习</h3>
+            <div class="skill-chips">
+              <span class="chip">AI 应用开发</span>
+              <span class="chip">LLM Prompt 工程</span>
+              <span class="chip">Rust</span>
+              <span class="chip">WebAssembly</span>
+              <span class="chip">设计审美</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 项目 ===================== -->
+    <section id="projects" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-index">03</span>
+          <h2>精选项目 <span class="section-en">/ Projects</span></h2>
+        </div>
+        <p class="section-desc reveal">一些我做过、或正在做的 side project，持续更新中。</p>
+
+        <div class="projects-grid">
+          <!-- ★ 项目卡片模板：复制整个 <article> 块即可新增项目 -->
+          <article class="project-card reveal">
+            <div class="project-top">
+              <span class="project-folder">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <div class="project-links">
+                <!-- ★ 修改：GitHub 仓库链接 -->
+                <a href="#" title="源码" aria-label="源码">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </a>
+                <!-- ★ 修改：在线预览链接 -->
+                <a href="#" title="在线预览" aria-label="在线预览">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3><a href="#">智能待办清单</a></h3>
+            <p>支持自然语言输入、自动拆解任务的 GTD 工具，界面做得非常克制。（项目描述占位）</p>
+            <div class="project-tags"><span>Vue 3</span><span>Node.js</span><span>SQLite</span></div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-top">
+              <span class="project-folder">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <div class="project-links">
+                <a href="#" title="源码" aria-label="源码">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </a>
+                <a href="#" title="在线预览" aria-label="在线预览">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3><a href="#">个人博客系统</a></h3>
+            <p>从零手写的静态博客，支持 Markdown 渲染与暗色模式，就是你现在看到的这个站。（描述占位）</p>
+            <div class="project-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-top">
+              <span class="project-folder">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <div class="project-links">
+                <a href="#" title="源码" aria-label="源码">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </a>
+                <a href="#" title="在线预览" aria-label="在线预览">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3><a href="#">终端天气工具</a></h3>
+            <p>在命令行里看天气预报的 CLI 小工具，支持 ASCII 图表输出，极客感拉满。（描述占位）</p>
+            <div class="project-tags"><span>Python</span><span>CLI</span><span>开源</span></div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-top">
+              <span class="project-folder">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <div class="project-links">
+                <a href="#" title="源码" aria-label="源码">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </a>
+                <a href="#" title="在线预览" aria-label="在线预览">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3><a href="#">数据可视化面板</a></h3>
+            <p>可自由配置的数据大屏：拖拽布局、实时刷新，个人仪表盘一步到位。（描述占位）</p>
+            <div class="project-tags"><span>React</span><span>ECharts</span><span>WebSocket</span></div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-top">
+              <span class="project-folder">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <div class="project-links">
+                <a href="#" title="源码" aria-label="源码">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </a>
+                <a href="#" title="在线预览" aria-label="在线预览">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3><a href="#">AI 剪贴板助手</a></h3>
+            <p>后台常驻的桌面小工具：选中即翻译、即总结，把 LLM 变成顺手的基础设施。（描述占位）</p>
+            <div class="project-tags"><span>Electron</span><span>LLM</span><span>TypeScript</span></div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-top">
+              <span class="project-folder">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <div class="project-links">
+                <a href="#" title="源码" aria-label="源码">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </a>
+                <a href="#" title="在线预览" aria-label="在线预览">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3><a href="#">深色 UI 组件库</a></h3>
+            <p>一套深色优先的轻量 UI 组件库，文档齐全，这个网站的按钮和卡片就出自它。（描述占位）</p>
+            <div class="project-tags"><span>TypeScript</span><span>Vite</span><span>组件库</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 博客预览 ===================== -->
+    <section id="blog" class="section section-alt">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-index">04</span>
+          <h2>最新文章 <span class="section-en">/ Blog</span></h2>
+        </div>
+        <p class="section-desc reveal">记录技术、工具与生活。</p>
+
+        <div class="blog-list">
+          <!-- ★ 文章卡片模板：复制整个 <a> 块即可新增，href 指向新的文章页 -->
+          <a class="blog-card reveal" href="blog-post.html">
+            <div class="blog-meta"><time>2026-09-20</time><span class="tag">JavaScript</span><span class="tag">CSS</span></div>
+            <h3>用 100 行 JS 给博客加上暗色模式切换（标题占位）</h3>
+            <p>从需求分析到最终实现，一份可以直接抄作业的暗色模式方案，顺便聊聊 CSS 变量的妙用。（摘要占位）</p>
+            <span class="blog-read">阅读全文 →</span>
+          </a>
+
+          <a class="blog-card reveal" href="blog-post.html">
+            <div class="blog-meta"><time>2026-08-02</time><span class="tag">部署</span><span class="tag">GitHub</span></div>
+            <h3>从零开始：把静态网站免费上线 GitHub Pages（标题占位）</h3>
+            <p>从仓库创建到自定义域名配置，手把手走完全程，中途踩的坑也都记下来了。（摘要占位）</p>
+            <span class="blog-read">阅读全文 →</span>
+          </a>
+
+          <a class="blog-card reveal" href="blog-post.html">
+            <div class="blog-meta"><time>2026-06-15</time><span class="tag">CSS</span><span class="tag">布局</span></div>
+            <h3>CSS Grid 实战：几个最常用的布局模式（标题占位）</h3>
+            <p>圣杯布局、响应式卡片墙……用过 Grid 之后，再也不想回去写 float 了。（摘要占位）</p>
+            <span class="blog-read">阅读全文 →</span>
+          </a>
+        </div>
+
+        <div class="blog-more reveal">
+          <a href="blog.html" class="btn btn-ghost">查看全部文章 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 联系我 ===================== -->
+    <section id="contact" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-index">05</span>
+          <h2>联系我 <span class="section-en">/ Contact</span></h2>
+        </div>
+
+        <div class="contact-box reveal">
+          <h3 class="contact-title">一起做点有意思的事</h3>
+          <!-- ★ 修改：联系区块的说明文字 -->
+          <p class="contact-desc">
+            无论是一起做点有趣的东西、交流技术，还是只是打个招呼，都欢迎写信给我，
+            看到邮件我会尽快回复。
+          </p>
+          <!-- ★ 修改：换成你的邮箱 -->
+          <a href="mailto:you@example.com" class="btn btn-primary btn-lg">you@example.com</a>
+          <div class="contact-social">
+            <a href="#" class="social-pill">GitHub</a>
+            <a href="#" class="social-pill">掘金</a>
+            <a href="#" class="social-pill">知乎</a>
+            <a href="#" class="social-pill">B 站</a>
+            <a href="#" class="social-pill">RSS</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 复古跑马灯 -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-inner">
+      <span>★ WELCOME TO EGG SPACE ★ 欢迎来到蛋壳egg 的赛博小站 ★ 蒸汽波永不过时 ★ 今日也要开心鸭 ★ </span>
+      <span>★ WELCOME TO EGG SPACE ★ 欢迎来到蛋壳egg 的赛博小站 ★ 蒸汽波永不过时 ★ 今日也要开心鸭 ★ </span>
+    </div>
+  </div>
+
+  <!-- ===================== 页脚 ===================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <!-- ★ 修改：年份和名字 -->
+      <p>© 2026 蛋壳egg · 保留所有权利</p>
+      <p>用 <span style="color:#e06c75">♥</span> 与原生 HTML / CSS / JS 手写构建</p>
+      <!-- 如果部署在国内服务器并绑定域名，需要加 ICP 备案号，取消下面注释并替换：
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">沪ICP备XXXXXXXX号</a>
+      -->
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=2"></script>
+  <script src="js/editor.js?v=2"></script>
+</body>
+</html>

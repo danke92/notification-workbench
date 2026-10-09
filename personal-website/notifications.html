@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通知工作台 · 深圳理工大学</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --bg-primary: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #242424;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --border-color: #3a3a3a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* 顶部导航 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-info {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    /* 控制栏 */
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      padding-left: 40px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+    }
+
+    .filter-box {
+      min-width: 150px;
+    }
+
+    .filter-box select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-box select:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+
+    .sort-box {
+      min-width: 150px;
+    }
+
+    .sort-box select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .sort-box select:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+
+    /* 统计卡片 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-blue);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* 通知列表 */
+    .notification-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .notification-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .notification-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-blue);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .notification-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .notification-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .notification-tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .tag-high {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+    }
+
+    .tag-medium {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-yellow);
+    }
+
+    .tag-low {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+    }
+
+    .notification-date {
+      color: var(--text-secondary);
+    }
+
+    .notification-content {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      max-height: 80px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .notification-content::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(transparent, var(--bg-secondary));
+      border-radius: 0 0 12px 12px;
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .action-btn.view {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .action-btn.view:hover {
+      background: var(--accent-blue);
+    }
+
+    .action-btn.delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--accent-red);
+    }
+
+    .action-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state-text {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .empty-state-subtext {
+      font-size: 14px;
+    }
+
+    /* 模态框 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--bg-tertiary);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .header-actions {
+        width: 100%;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .search-box, .filter-box, .sort-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 头部 -->
+    <header class="header">
+      <div>
+        <h1 class="header-title">📚 通知工作台</h1>
+        <p class="header-info">深圳理工大学 - 每周通知汇总</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="openModal()">+ 添加通知</button>
+        <button class="btn btn-success" onclick="collectNotifications()">📥 收集通知</button>
+        <button class="btn btn-primary" onclick="refreshNotifications()">🔄 刷新</button>
+      </div>
+    </header>
+
+    <!-- 控制栏 -->
+    <div class="controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索通知标题或内容..." oninput="filterNotifications()">
+      </div>
+      <div class="filter-box">
+        <select id="importanceFilter" onchange="filterNotifications()">
+          <option value="all">所有重要程度</option>
+          <option value="high">🔴 高优先级</option>
+          <option value="medium">🟡 中优先级</option>
+          <option value="low">🟢 低优先级</option>
+        </select>
+      </div>
+      <div class="sort-box">
+        <select id="sortOrder" onchange="filterNotifications()">
+          <option value="date-desc">📅 最新优先</option>
+          <option value="date-asc">📅 最旧优先</option>
+          <option value="importance-desc">🔥 重要程度优先</option>
+          <option value="importance-asc">🔥 重要程度升序</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="totalNotifications">0</div>
+        <div class="stat-label">通知总数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="highPriorityCount" style="color: var(--accent-red);">0</div>
+        <div class="stat-label">高优先级</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="mediumPriorityCount" style="color: var(--accent-yellow);">0</div>
+        <div class="stat-label">中优先级</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="lowPriorityCount" style="color: var(--accent-green);">0</div>
+        <div class="stat-label">低优先级</div>
+      </div>
+    </div>
+
+    <!-- 通知列表 -->
+    <div class="notification-list" id="notificationList">
+      <!-- 通知卡片将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 空状态 -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <div class="empty-state-icon">📭</div>
+      <p class="empty-state-text">暂无通知</p>
+      <p class="empty-state-subtext">点击"收集通知"按钮从教务系统获取新通知</p>
+    </div>
+
+    <!-- 加载动画 -->
+    <div class="loading" id="loading">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">正在加载通知...</p>
+    </div>
+  </div>
+
+  <!-- 添加/编辑通知模态框 -->
+  <div class="modal" id="notificationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">添加通知</h2>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <form id="notificationForm" onsubmit="saveNotification(event)">
+        <input type="hidden" id="notificationId">
+        <div class="form-group">
+          <label class="form-label">通知标题 *</label>
+          <input type="text" class="form-input" id="notificationTitle" required placeholder="输入通知标题">
+        </div>
+        <div class="form-group">
+          <label class="form-label">重要程度 *</label>
+          <select class="form-select" id="notificationImportance" required>
+            <option value="high">🔴 高优先级</option>
+            <option value="medium">🟡 中优先级</option>
+            <option value="low">🟢 低优先级</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">通知内容 *</label>
+          <textarea class="form-textarea" id="notificationContent" required placeholder="输入通知内容（100-200字）"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">发布时间 *</label>
+          <input type="datetime-local" class="form-input" id="notificationDate" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 查看通知详情模态框 -->
+  <div class="modal" id="viewModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="viewModalTitle">通知详情</h2>
+        <button class="modal-close" onclick="closeViewModal()">×</button>
+      </div>
+      <div id="viewModalContent">
+        <!-- 内容将通过JavaScript动态填充 -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 全局变量
+    let notifications = [];
+
+    // DOM元素
+    const notificationList = document.getElementById('notificationList');
+    const emptyState = document.getElementById('emptyState');
+    const loading = document.getElementById('loading');
+    const modal = document.getElementById('notificationModal');
+    const viewModal = document.getElementById('viewModal');
+    const notificationForm = document.getElementById('notificationForm');
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      loadNotifications();
+      updateStats();
+    });
+
+    // 加载通知
+    function loadNotifications() {
+      loading.classList.add('active');
+      const savedNotifications = localStorage.getItem('notifications');
+      if (savedNotifications) {
+        notifications = JSON.parse(savedNotifications);
+      } else {
+        notifications = [];
+      }
+      renderNotifications();
+      loading.classList.remove('active');
+    }
+
+    // 渲染通知列表
+    function renderNotifications() {
+      filterNotifications();
+    }
+
+    // 筛选和排序通知
+    function filterNotifications() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const importanceFilter = document.getElementById('importanceFilter').value;
+      const sortOrder = document.getElementById('sortOrder').value;
+
+      // 筛选
+      let filtered = notifications.filter(notification => {
+        const matchesSearch = notification.title.toLowerCase().includes(searchTerm) ||
+                             notification.content.toLowerCase().includes(searchTerm);
+        const matchesImportance = importanceFilter === 'all' || notification.importance === importanceFilter;
+        return matchesSearch && matchesImportance;
+      });
+
+      // 排序
+      filtered.sort((a, b) => {
+        switch (sortOrder) {
+          case 'date-desc':
+            return new Date(b.date) - new Date(a.date);
+          case 'date-asc':
+            return new Date(a.date) - new Date(b.date);
+          case 'importance-desc':
+            const importanceOrder = { high: 3, medium: 2, low: 1 };
+            return importanceOrder[b.importance] - importanceOrder[a.importance];
+          case 'importance-asc':
+            const importanceOrderAsc = { high: 1, medium: 2, low: 3 };
+            return importanceOrderAsc[a.importance] - importanceOrderAsc[b.importance];
+          default:
+            return 0;
+        }
+      });
+
+      // 更新统计
+      updateStats(filtered);
+
+      // 渲染
+      if (filtered.length === 0) {
+        notificationList.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      notificationList.innerHTML = filtered.map(notification => `
+        <div class="notification-card" data-id="${notification.id}">
+          <div class="notification-header">
+            <div>
+              <h3 class="notification-title">${escapeHtml(notification.title)}</h3>
+              <div class="notification-meta">
+                <span class="notification-tag tag-${notification.importance}">${getImportanceLabel(notification.importance)}</span>
+                <span class="notification-date">📅 ${formatDate(notification.date)}</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-content">${escapeHtml(notification.content)}</div>
+          <div class="notification-actions">
+            <button class="action-btn view" onclick="viewNotification(${notification.id})">查看详情</button>
+            <button class="action-btn delete" onclick="deleteNotification(${notification.id})">删除</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 更新统计
+    function updateStats(data = notifications) {
+      document.getElementById('totalNotifications').textContent = data.length;
+      document.getElementById('highPriorityCount').textContent = data.filter(n => n.importance === 'high').length;
+      document.getElementById('mediumPriorityCount').textContent = data.filter(n => n.importance === 'medium').length;
+      document.getElementById('lowPriorityCount').textContent = data.filter(n => n.importance === 'low').length;
+    }
+
+    // 获取重要程度标签
+    function getImportanceLabel(importance) {
+      const labels = {
+        high: '🔴 高优先级',
+        medium: '🟡 中优先级',
+        low: '🟢 低优先级'
+      };
+      return labels[importance];
+    }
+
+    // 格式化日期
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // HTML转义
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 打开模态框
+    function openModal(notificationId = null) {
+      modal.classList.add('active');
+      if (notificationId) {
+        const notification = notifications.find(n => n.id === notificationId);
+        document.getElementById('modalTitle').textContent = '编辑通知';
+        document.getElementById('notificationId').value = notification.id;
+        document.getElementById('notificationTitle').value = notification.title;
+        document.getElementById('notificationImportance').value = notification.importance;
+        document.getElementById('notificationContent').value = notification.content;
+        document.getElementById('notificationDate').value = notification.date;
+      } else {
+        document.getElementById('modalTitle').textContent = '添加通知';
+        document.getElementById('notificationForm').reset();
+        document.getElementById('notificationId').value = '';
+        document.getElementById('notificationDate').value = new Date().toISOString().slice(0, 16);
+      }
+    }
+
+    // 关闭模态框
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    // 保存通知
+    function saveNotification(event) {
+      event.preventDefault();
+
+      const id = document.getElementById('notificationId').value;
+      const title = document.getElementById('notificationTitle').value.trim();
+      const importance = document.getElementById('notificationImportance').value;
+      const content = document.getElementById('notificationContent').value.trim();
+      const date = document.getElementById('notificationDate').value;
+
+      // 验证内容长度
+      if (content.length < 100 || content.length > 200) {
+        alert('通知内容必须在100到200字之间');
+        return;
+      }
+
+      if (id) {
+        // 编辑
+        const index = notifications.findIndex(n => n.id === parseInt(id));
+        if (index !== -1) {
+          notifications[index] = { id: parseInt(id), title, importance, content, date };
+        }
+      } else {
+        // 新增
+        const newId = Date.now();
+        notifications.push({ id: newId, title, importance, content, date });
+      }
+
+      // 保存到localStorage
+      localStorage.setItem('notifications', JSON.stringify(notifications));
+
+      closeModal();
+      renderNotifications();
+    }
+
+    // 查看通知详情
+    function viewNotification(id) {
+      const notification = notifications.find(n => n.id === id);
+      if (notification) {
+        document.getElementById('viewModalTitle').textContent = notification.title;
+        document.getElementById('viewModalContent').innerHTML = `
+          <div class="form-group">
+            <label class="form-label">重要程度</label>
+            <div class="notification-tag tag-${notification.importance}" style="font-size: 14px; padding: 8px 16px;">${getImportanceLabel(notification.importance)}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">发布时间</label>
+            <div class="form-input" style="background: var(--bg-primary); border: none; padding: 12px 16px;">${formatDate(notification.date)}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">通知内容</label>
+            <div class="form-input" style="background: var(--bg-primary); border: none; padding: 12px 16px; line-height: 1.8;">${escapeHtml(notification.content)}</div>
+          </div>
+        `;
+        viewModal.classList.add('active');
+      }
+    }
+
+    // 关闭查看模态框
+    function closeViewModal() {
+      viewModal.classList.remove('active');
+    }
+
+    // 删除通知
+    function deleteNotification(id) {
+      if (confirm('确定要删除这条通知吗？')) {
+        notifications = notifications.filter(n => n.id !== id);
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+        renderNotifications();
+      }
+    }
+
+    // 收集通知（调用Python脚本）
+    function collectNotifications() {
+      if (confirm('确定要从教务系统收集通知吗？\n\n注意：需要先运行 notification-collector.py 脚本。')) {
+        loading.classList.add('active');
+
+        // 尝试从JSON文件加载
+        fetch('notifications.json')
+          .then(response => {
+            if (!response.ok) throw new Error('文件不存在');
+            return response.json();
+          })
+          .then(data => {
+            if (data.notifications && Array.isArray(data.notifications)) {
+              notifications = data.notifications;
+              localStorage.setItem('notifications', JSON.stringify(notifications));
+              renderNotifications();
+              alert(`成功收集 ${notifications.length} 条通知！`);
+            } else {
+              throw new Error('数据格式错误');
+            }
+          })
+          .catch(error => {
+            alert('无法读取通知数据，请确保已运行 notification-collector.py 脚本并生成了 notifications.json 文件。\n\n错误信息：' + error.message);
+            console.error('加载通知失败:', error);
+          })
+          .finally(() => {
+            loading.classList.remove('active');
+          });
+      }
+    }
+
+    // 刷新通知
+    function refreshNotifications() {
+      loadNotifications();
+    }
+
+    // 点击模态框外部关闭
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    viewModal.addEventListener('click', (e) => {
+      if (e.target === viewModal) {
+        closeViewModal();
+      }
+    });
+  </script>
+</body>
+</html>

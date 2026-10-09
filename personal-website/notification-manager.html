@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通知数据管理 · 深圳理工大学</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --bg-primary: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #242424;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --border-color: #3a3a3a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* 顶部导航 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-info {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* 操作面板 */
+    .action-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .action-panel h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .action-btn {
+      padding: 15px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .action-btn.success {
+      background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+      color: white;
+    }
+
+    .action-btn.success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .action-btn.warning {
+      background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-orange) 100%);
+      color: #1a1a1a;
+    }
+
+    .action-btn.danger {
+      background: linear-gradient(135deg, var(--accent-red) 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .action-btn.danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    /* 数据统计 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-blue);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* 数据预览 */
+    .data-preview {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .data-preview h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .data-table td {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .data-table tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* 日志区域 */
+    .log-area {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .log-area h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .log-content {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .log-entry {
+      margin-bottom: 8px;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .log-entry.info {
+      color: var(--accent-blue);
+    }
+
+    .log-entry.success {
+      color: var(--accent-green);
+    }
+
+    .log-entry.warning {
+      color: var(--accent-yellow);
+    }
+
+    .log-entry.error {
+      color: var(--accent-red);
+    }
+
+    /* 模态框 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.3s ease;
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--bg-tertiary);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 头部 -->
+    <header class="header">
+      <div>
+        <h1 class="header-title">⚙️ 数据管理</h1>
+        <p class="header-info">通知数据备份、导入导出和统计分析</p>
+      </div>
+    </header>
+
+    <!-- 操作面板 -->
+    <div class="action-panel">
+      <h2>操作面板</h2>
+      <div class="action-buttons">
+        <button class="action-btn primary" onclick="exportData()">
+          📤 导出数据
+        </button>
+        <button class="action-btn success" onclick="importData()">
+          📥 导入数据
+        </button>
+        <button class="action-btn warning" onclick="backupData()">
+          💾 备份数据
+        </button>
+        <button class="action-btn danger" onclick="restoreData()">
+          🔄 恢复数据
+        </button>
+        <button class="action-btn primary" onclick="clearAllData()">
+          🗑️ 清空数据
+        </button>
+        <button class="action-btn success" onclick="collectNewNotifications()">
+          📥 收集新通知
+        </button>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="totalNotifications">0</div>
+        <div class="stat-label">通知总数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="highPriorityCount" style="color: var(--accent-red);">0</div>
+        <div class="stat-label">高优先级</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="mediumPriorityCount" style="color: var(--accent-yellow);">0</div>
+        <div class="stat-label">中优先级</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="lowPriorityCount" style="color: var(--accent-green);">0</div>
+        <div class="stat-label">低优先级</div>
+      </div>
+    </div>
+
+    <!-- 数据预览 -->
+    <div class="data-preview">
+      <h2>数据预览</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>标题</th>
+            <th>重要程度</th>
+            <th>发布时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="dataTableBody">
+          <!-- 数据将通过JavaScript动态填充 -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 日志区域 -->
+    <div class="log-area">
+      <h2>操作日志</h2>
+      <div class="log-content" id="logContent">
+        <div class="log-entry info">[系统] 数据管理工具已加载</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 导入数据模态框 -->
+  <div class="modal" id="importModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">导入数据</h2>
+        <button class="modal-close" onclick="closeImportModal()">×</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">选择JSON文件</label>
+        <input type="file" class="form-input" id="importFile" accept=".json" onchange="handleImportFile(event)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">导入方式</label>
+        <select class="form-input" id="importMode">
+          <option value="merge">合并到现有数据</option>
+          <option value="replace">替换现有数据</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn danger" onclick="closeImportModal()">取消</button>
+        <button class="action-btn primary" onclick="confirmImport()">确认导入</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 备份数据模态框 -->
+  <div class="modal" id="backupModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">备份数据</h2>
+        <button class="modal-close" onclick="closeBackupModal()">×</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备份名称</label>
+        <input type="text" class="form-input" id="backupName" value="notification-backup">
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <input type="text" class="form-input" id="backupNote" placeholder="可选备注信息">
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn danger" onclick="closeBackupModal()">取消</button>
+        <button class="action-btn primary" onclick="confirmBackup()">确认备份</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加载动画 -->
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">正在处理...</p>
+  </div>
+
+  <script>
+    // 全局变量
+    let notifications = [];
+
+    // DOM元素
+    const dataTableBody = document.getElementById('dataTableBody');
+    const logContent = document.getElementById('logContent');
+    const importModal = document.getElementById('importModal');
+    const backupModal = document.getElementById('backupModal');
+    const loading = document.getElementById('loading');
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      loadNotifications();
+      addLog('info', '数据管理工具已加载');
+    });
+
+    // 加载通知
+    function loadNotifications() {
+      const savedNotifications = localStorage.getItem('notifications');
+      if (savedNotifications) {
+        notifications = JSON.parse(savedNotifications);
+      } else {
+        notifications = [];
+      }
+      updateStats();
+      renderDataTable();
+    }
+
+    // 更新统计
+    function updateStats() {
+      document.getElementById('totalNotifications').textContent = notifications.length;
+      document.getElementById('highPriorityCount').textContent = notifications.filter(n => n.importance === 'high').length;
+      document.getElementById('mediumPriorityCount').textContent = notifications.filter(n => n.importance === 'medium').length;
+      document.getElementById('lowPriorityCount').textContent = notifications.filter(n => n.importance === 'low').length;
+    }
+
+    // 渲染数据表格
+    function renderDataTable() {
+      if (notifications.length === 0) {
+        dataTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">暂无数据</td></tr>';
+        return;
+      }
+
+      dataTableBody.innerHTML = notifications.slice(0, 10).map(notification => `
+        <tr>
+          <td>${escapeHtml(notification.title)}</td>
+          <td><span style="font-size: 12px; padding: 2px 8px; border-radius: 4px; background: ${getImportanceBg(notification.importance)}">${getImportanceLabel(notification.importance)}</span></td>
+          <td>${formatDate(notification.date)}</td>
+          <td>
+            <button class="action-btn" style="padding: 4px 8px; font-size: 12px;" onclick="viewNotification(${notification.id})">查看</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // 获取重要程度背景色
+    function getImportanceBg(importance) {
+      const backgrounds = {
+        high: 'rgba(239, 68, 68, 0.2)',
+        medium: 'rgba(245, 158, 11, 0.2)',
+        low: 'rgba(16, 185, 129, 0.2)'
+      };
+      return backgrounds[importance] || 'transparent';
+    }
+
+    // 获取重要程度标签
+    function getImportanceLabel(importance) {
+      const labels = {
+        high: '🔴 高优先级',
+        medium: '🟡 中优先级',
+        low: '🟢 低优先级'
+      };
+      return labels[importance] || '⚪ 未知';
+    }
+
+    // 格式化日期
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+
+    // HTML转义
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 添加日志
+    function addLog(type, message) {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      const timestamp = new Date().toLocaleTimeString('zh-CN');
+      entry.textContent = `[${timestamp}] ${message}`;
+      logContent.appendChild(entry);
+      logContent.scrollTop = logContent.scrollHeight;
+    }
+
+    // 导出数据
+    function exportData() {
+      if (notifications.length === 0) {
+        alert('没有数据可导出');
+        return;
+      }
+
+      const data = {
+        exported_at: new Date().toISOString(),
+        total_count: notifications.length,
+        notifications: notifications
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `notifications-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      addLog('success', `成功导出 ${notifications.length} 条通知`);
+    }
+
+    // 导入数据
+    function importData() {
+      importModal.classList.add('active');
+    }
+
+    function closeImportModal() {
+      importModal.classList.remove('active');
+      document.getElementById('importFile').value = '';
+    }
+
+    function handleImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.notifications && Array.isArray(data.notifications)) {
+            document.getElementById('importFile').dataset.json = JSON.stringify(data);
+          } else {
+            alert('文件格式错误，缺少 notifications 数组');
+          }
+        } catch (error) {
+          alert('JSON解析失败：' + error.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function confirmImport() {
+      const fileInput = document.getElementById('importFile');
+      const json = fileInput.dataset.json;
+      const mode = document.getElementById('importMode').value;
+
+      if (!json) {
+        alert('请先选择文件');
+        return;
+      }
+
+      const data = JSON.parse(json);
+      const newNotifications = data.notifications || [];
+
+      if (mode === 'replace') {
+        notifications = newNotifications;
+        addLog('warning', `替换了 ${notifications.length} 条通知`);
+      } else {
+        const existingIds = new Set(notifications.map(n => n.id));
+        const newItems = newNotifications.filter(n => !existingIds.has(n.id));
+        notifications = [...notifications, ...newItems];
+        addLog('success', `合并了 ${newItems.length} 条新通知，总计 ${notifications.length} 条`);
+      }
+
+      localStorage.setItem('notifications', JSON.stringify(notifications));
+      updateStats();
+      renderDataTable();
+      closeImportModal();
+
+      alert(`导入成功！共 ${newNotifications.length} 条通知`);
+    }
+
+    // 备份数据
+    function backupData() {
+      backupModal.classList.add('active');
+    }
+
+    function closeBackupModal() {
+      backupModal.classList.remove('active');
+      document.getElementById('backupName').value = '';
+      document.getElementById('backupNote').value = '';
+    }
+
+    function confirmBackup() {
+      const backupName = document.getElementById('backupName').value || 'notification-backup';
+      const backupNote = document.getElementById('backupNote').value || '';
+
+      const data = {
+        backup_name: backupName,
+        backup_note: backupNote,
+        backup_at: new Date().toISOString(),
+        total_count: notifications.length,
+        notifications: notifications
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${backupName}-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      addLog('success', `备份数据已保存：${backupName}`);
+      closeBackupModal();
+    }
+
+    // 恢复数据
+    function restoreData() {
+      if (notifications.length === 0) {
+        alert('当前没有数据可恢复');
+        return;
+      }
+
+      if (confirm('确定要恢复数据吗？这将覆盖当前所有数据。')) {
+        const data = {
+          restored_at: new Date().toISOString(),
+          total_count: notifications.length,
+          notifications: notifications
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `restore-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        addLog('success', `备份文件已生成：${data.restored_at}`);
+        alert('备份文件已生成，请妥善保存！');
+      }
+    }
+
+    // 清空数据
+    function clearAllData() {
+      if (confirm('确定要清空所有通知数据吗？此操作不可恢复！')) {
+        notifications = [];
+        localStorage.removeItem('notifications');
+        updateStats();
+        renderDataTable();
+        addLog('warning', '所有数据已清空');
+        alert('数据已清空');
+      }
+    }
+
+    // 收集新通知
+    function collectNewNotifications() {
+      if (confirm('确定要从教务系统收集新通知吗？\n\n注意：需要先运行 notification-collector.py 脚本。')) {
+        loading.classList.add('active');
+
+        fetch('notifications.json')
+          .then(response => {
+            if (!response.ok) throw new Error('文件不存在');
+            return response.json();
+          })
+          .then(data => {
+            if (data.notifications && Array.isArray(data.notifications)) {
+              const newCount = data.notifications.length;
+              notifications = data.notifications;
+              localStorage.setItem('notifications', JSON.stringify(notifications));
+              updateStats();
+              renderDataTable();
+              addLog('success', `成功收集 ${newCount} 条通知`);
+              alert(`成功收集 ${newCount} 条通知！`);
+            } else {
+              throw new Error('数据格式错误');
+            }
+          })
+          .catch(error => {
+            addLog('error', `收集失败：${error.message}`);
+            alert('无法读取通知数据，请确保已运行 notification-collector.py 脚本');
+          })
+          .finally(() => {
+            loading.classList.remove('active');
+          });
+      }
+    }
+
+    // 查看通知
+    function viewNotification(id) {
+      const notification = notifications.find(n => n.id === id);
+      if (notification) {
+        alert(`标题：${notification.title}\n\n重要程度：${getImportanceLabel(notification.importance)}\n\n内容：${notification.content}`);
+      }
+    }
+
+    // 点击模态框外部关闭
+    importModal.addEventListener('click', (e) => {
+      if (e.target === importModal) closeImportModal();
+    });
+
+    backupModal.addEventListener('click', (e) => {
+      if (e.target === backupModal) closeBackupModal();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试通知加载</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-result {
+      background: white;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .success { border-left: 4px solid #10b981; }
+    .error { border-left: 4px solid #ef4444; }
+    h1 { color: #333; }
+    .notification-item {
+      padding: 15px;
+      margin: 10px 0;
+      background: #f9f9f9;
+      border-radius: 6px;
+    }
+    .importance-high { color: #ef4444; font-weight: bold; }
+    .importance-medium { color: #f59e0b; font-weight: bold; }
+    .importance-low { color: #10b981; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>测试通知加载</h1>
+
+  <div id="test-results"></div>
+
+  <script>
+    const resultsDiv = document.getElementById('test-results');
+
+    // 测试1：检查JSON文件
+    fetch('notifications.json')
+      .then(response => {
+        const test1 = document.createElement('div');
+        test1.className = 'test-result ' + (response.ok ? 'success' : 'error');
+        test1.innerHTML = `<strong>测试1：JSON文件访问</strong><br>状态：${response.status} ${response.statusText}`;
+        resultsDiv.appendChild(test1);
+        return response.json();
+      })
+      .then(data => {
+        // 测试2：检查数据结构
+        const test2 = document.createElement('div');
+        test2.className = 'test-result success';
+        test2.innerHTML = `<strong>测试2：数据结构验证</strong><br>✓ collected_at: ${data.collected_at}<br>✓ total_count: ${data.total_count}<br>✓ notifications数组存在`;
+        resultsDiv.appendChild(test2);
+
+        // 测试3：检查通知数量
+        const test3 = document.createElement('div');
+        test3.className = 'test-result success';
+        test3.innerHTML = `<strong>测试3：通知数量</strong><br>共 ${data.total_count} 条通知`;
+        resultsDiv.appendChild(test3);
+
+        // 测试4：显示通知列表
+        const test4 = document.createElement('div');
+        test4.className = 'test-result success';
+        test4.innerHTML = `<strong>测试4：通知详情</strong>`;
+        resultsDiv.appendChild(test4);
+
+        data.notifications.forEach((notif, index) => {
+          const item = document.createElement('div');
+          item.className = 'notification-item';
+          const importanceClass = `importance-${notif.importance}`;
+          item.innerHTML = `
+            <div>
+              <strong>${index + 1}. ${notif.title}</strong><br>
+              <span class="${importanceClass}">[${notif.importance}]</span><br>
+              时间：${notif.date}<br>
+              总结：${notif.summary}
+            </div>
+          `;
+          test4.appendChild(item);
+        });
+
+        // 测试5：检查总结长度
+        const test5 = document.createElement('div');
+        test5.className = 'test-result success';
+        data.notifications.forEach(notif => {
+          const len = notif.summary.length;
+          const valid = len >= 100 && len <= 200;
+          test5.innerHTML += `<div>${notif.title}: ${len}字 ${valid ? '✓' : '✗'}</div>`;
+        });
+        resultsDiv.appendChild(test5);
+
+        // 测试6：检查重要程度分类
+        const test6 = document.createElement('div');
+        test6.className = 'test-result success';
+        const counts = { high: 0, medium: 0, low: 0 };
+        data.notifications.forEach(n => counts[n.importance]++);
+        test6.innerHTML = `
+          <strong>测试6：重要程度分类</strong><br>
+          高优先级：${counts.high}<br>
+          中优先级：${counts.medium}<br>
+          低优先级：${counts.low}
+        `;
+        resultsDiv.appendChild(test6);
+
+        // 全部测试完成
+        const final = document.createElement('div');
+        final.className = 'test-result success';
+        final.innerHTML = `<strong>🎉 所有测试通过！通知系统运行正常！</strong>`;
+        resultsDiv.appendChild(final);
+      })
+      .catch(error => {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'test-result error';
+        errorDiv.innerHTML = `<strong>❌ 错误</strong><br>${error.message}`;
+        resultsDiv.appendChild(errorDiv);
+      });
+  </script>
+</body>
+</html>

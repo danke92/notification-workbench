@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客 · 蛋壳egg</title>
+  <meta name="description" content="蛋壳egg 的博客：技术、工具与生活的记录。">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <!-- ===================== 顶部导航 ===================== -->
+  <header class="site-nav" id="siteNav">
+    <nav class="container nav-inner">
+      <a href="index.html" class="logo">&lt;<span>蛋壳egg</span>&gt;</a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">首页</a></li>
+        <li><a href="index.html#about" class="nav-link">关于</a></li>
+        <li><a href="index.html#skills" class="nav-link">技能</a></li>
+        <li><a href="index.html#projects" class="nav-link">项目</a></li>
+        <li><a href="blog.html" class="nav-link active">博客</a></li>
+        <li><a href="index.html#contact" class="nav-link">联系</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="切换菜单" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <div class="container">
+      <div class="page-header reveal">
+        <span class="section-index">~/blog</span>
+        <h1>博客 <span class="section-en">/ 写点东西</span></h1>
+        <p class="page-desc">记录技术、工具与生活。目前共 6 篇（占位数字，按实际情况改）。</p>
+      </div>
+
+      <!-- ===================== 2026 ===================== -->
+      <!-- ★ 文章行模板：复制整个 <a> 块即可新增一篇，href 指向对应文章页 -->
+      <section class="post-group reveal">
+        <h2 class="post-group-year">2026</h2>
+
+        <a class="post-row" href="blog-post.html">
+          <time class="post-date">09-20</time>
+          <div class="post-main">
+            <h3>用 100 行 JS 给博客加上暗色模式切换（标题占位）</h3>
+            <p>从需求分析到最终实现，一份可以直接抄作业的暗色模式方案。（摘要占位）</p>
+          </div>
+          <div class="post-tags"><span class="tag">JavaScript</span><span class="tag">CSS</span></div>
+        </a>
+
+        <a class="post-row" href="blog-post.html">
+          <time class="post-date">08-02</time>
+          <div class="post-main">
+            <h3>从零开始：把静态网站免费上线 GitHub Pages（标题占位）</h3>
+            <p>从仓库创建到自定义域名配置，手把手走完全程。（摘要占位）</p>
+          </div>
+          <div class="post-tags"><span class="tag">部署</span><span class="tag">GitHub</span></div>
+        </a>
+
+        <a class="post-row" href="blog-post.html">
+          <time class="post-date">06-15</time>
+          <div class="post-main">
+            <h3>CSS Grid 实战：几个最常用的布局模式（标题占位）</h3>
+            <p>圣杯布局、响应式卡片墙，Grid 的正确打开方式。（摘要占位）</p>
+          </div>
+          <div class="post-tags"><span class="tag">CSS</span><span class="tag">布局</span></div>
+        </a>
+      </section>
+
+      <!-- ===================== 2025 ===================== -->
+      <section class="post-group reveal">
+        <h2 class="post-group-year">2025</h2>
+
+        <a class="post-row" href="blog-post.html">
+          <time class="post-date">12-30</time>
+          <div class="post-main">
+            <h3>我的 2025 年度开发工具清单（标题占位）</h3>
+            <p>今年让我效率翻倍的那些编辑器、插件与命令行工具。（摘要占位）</p>
+          </div>
+          <div class="post-tags"><span class="tag">工具</span><span class="tag">年度总结</span></div>
+        </a>
+
+        <a class="post-row" href="blog-post.html">
+          <time class="post-date">10-12</time>
+          <div class="post-main">
+            <h3>写给新手的 Git 常用命令速查（标题占位）</h3>
+            <p>日常 90% 的场景，其实只用到这十几个命令。（摘要占位）</p>
+          </div>
+          <div class="post-tags"><span class="tag">Git</span><span class="tag">入门</span></div>
+        </a>
+
+        <a class="post-row" href="blog-post.html">
+          <time class="post-date">07-01</time>
+          <div class="post-main">
+            <h3>为什么我开始写技术博客（标题占位）</h3>
+            <p>输出是最好的输入——以及这一年写作带给我的改变。（摘要占位）</p>
+          </div>
+          <div class="post-tags"><span class="tag">随笔</span><span class="tag">写作</span></div>
+        </a>
+      </section>
+    </div>
+  </main>
+
+  <!-- 复古跑马灯 -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-inner">
+      <span>★ WELCOME TO EGG SPACE ★ 欢迎来到蛋壳egg 的赛博小站 ★ 蒸汽波永不过时 ★ 常来写点东西 ★ </span>
+      <span>★ WELCOME TO EGG SPACE ★ 欢迎来到蛋壳egg 的赛博小站 ★ 蒸汽波永不过时 ★ 常来写点东西 ★ </span>
+    </div>
+  </div>
+
+  <!-- ===================== 页脚 ===================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 蛋壳egg · 保留所有权利</p>
+      <p><a href="index.html">← 返回主页</a></p>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=2"></script>
+  <script src="js/editor.js?v=2"></script>
+</body>
+</html>

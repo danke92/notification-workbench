@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ★ 修改：每篇文章自己的标题 -->
+  <title>用 100 行 JS 给博客加上暗色模式切换 · 蛋壳egg</title>
+  <meta name="description" content="文章摘要占位。">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <!-- ===================== 顶部导航 ===================== -->
+  <header class="site-nav" id="siteNav">
+    <nav class="container nav-inner">
+      <a href="index.html" class="logo">&lt;<span>蛋壳egg</span>&gt;</a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">首页</a></li>
+        <li><a href="index.html#about" class="nav-link">关于</a></li>
+        <li><a href="index.html#skills" class="nav-link">技能</a></li>
+        <li><a href="index.html#projects" class="nav-link">项目</a></li>
+        <li><a href="blog.html" class="nav-link active">博客</a></li>
+        <li><a href="index.html#contact" class="nav-link">联系</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="切换菜单" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ===================== 文章正文 =====================
+       这是「文章模板页」：写新文章时复制本文件、改标题和正文即可
+       ==================================================== -->
+  <main class="article">
+    <a class="article-back" href="blog.html">← 返回博客列表</a>
+
+    <header class="article-header reveal">
+      <!-- ★ 修改：日期 / 标签 / 阅读时长 -->
+      <div class="article-meta">
+        <time>2026-09-20</time>
+        <span class="tag">JavaScript</span>
+        <span class="tag">CSS</span>
+        <span>约 6 分钟</span>
+      </div>
+      <h1>用 100 行 JS 给博客加上暗色模式切换（标题占位）</h1>
+    </header>
+
+    <div class="article-content reveal">
+      <!-- ★ 修改：正文从这里开始。h2 是小标题，p 是段落 -->
+
+      <p>
+        开头段落占位：用一两段话交代背景和动机，让读者知道这篇文章要解决什么问题、
+        读完能获得什么。比如——我的博客一开始只有浅色主题，晚上看实在太刺眼了，
+        于是决定自己动手加一个暗色模式，顺便把过程记录下来。
+      </p>
+
+      <h2>为什么需要暗色模式</h2>
+      <p>
+        正文段落占位。可以写你的分析、对比、调研过程……
+        行内代码像 <code>prefers-color-scheme</code> 这样显示，链接像
+        <a href="#">这样显示</a>。
+      </p>
+
+      <blockquote>
+        引用样式：可以引用别人说过的话，也可以放自己最想强调的一句结论。
+      </blockquote>
+
+      <h2>实现思路</h2>
+      <p>正文段落占位。先列一下要做的事情：</p>
+      <ul>
+        <li>用 CSS 变量定义两套颜色主题；</li>
+        <li>监听切换按钮，切换时给 <code>&lt;body&gt;</code> 加 class；</li>
+        <li>把用户的选择存进 <code>localStorage</code>，下次访问自动恢复；</li>
+        <li>首次访问时跟随系统偏好。</li>
+      </ul>
+
+      <h2>核心代码</h2>
+      <p>正文段落占位：下面是代码块的样式效果。</p>
+
+      <div class="code-window">
+        <div class="code-titlebar">
+          <span class="tb-dot dot-r"></span><span class="tb-dot dot-y"></span><span class="tb-dot dot-g"></span>
+          <span class="code-filename">theme.js</span>
+        </div>
+<pre class="code-body"><code><span class="tok-cm">// 伪代码示例：暗色模式切换</span>
+<span class="tok-kw">const</span> <span class="tok-var">btn</span> <span class="tok-pun">=</span> document.<span class="tok-var">querySelector</span>(<span class="tok-str">'#theme-toggle'</span>);
+btn.<span class="tok-var">addEventListener</span>(<span class="tok-str">'click'</span>, <span class="tok-pun">()</span> <span class="tok-kw">=&gt;</span> <span class="tok-pun">{</span>
+  document.body.classList.<span class="tok-var">toggle</span>(<span class="tok-str">'dark'</span>);
+  localStorage.<span class="tok-var">setItem</span>(<span class="tok-str">'theme'</span>,
+    document.body.classList.<span class="tok-var">contains</span>(<span class="tok-str">'dark'</span>) <span class="tok-pun">?</span> <span class="tok-str">'dark'</span> <span class="tok-pun">:</span> <span class="tok-str">'light'</span>);
+<span class="tok-pun">});</span></code></pre>
+      </div>
+
+      <h2>写在最后</h2>
+      <p>
+        结尾段落占位：总结一下全文，或者预告下一篇要写什么。
+        如果这个思路对你有启发，欢迎带走改造成你自己的版本。
+      </p>
+    </div>
+
+    <!-- ★ 修改：上一篇 / 下一篇的链接和标题 -->
+    <nav class="article-nav">
+      <a href="blog-post.html">
+        <span class="article-nav-label">← 上一篇</span>
+        <span class="article-nav-title">上一篇标题（占位）</span>
+      </a>
+      <a href="blog-post.html" class="next">
+        <span class="article-nav-label">下一篇 →</span>
+        <span class="article-nav-title">下一篇标题（占位）</span>
+      </a>
+    </nav>
+  </main>
+
+  <!-- 复古跑马灯 -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-inner">
+      <span>★ WELCOME TO EGG SPACE ★ 欢迎来到蛋壳egg 的赛博小站 ★ 蒸汽波永不过时 ★ 感谢阅读 ★ </span>
+      <span>★ WELCOME TO EGG SPACE ★ 欢迎来到蛋壳egg 的赛博小站 ★ 蒸汽波永不过时 ★ 感谢阅读 ★ </span>
+    </div>
+  </div>
+
+  <!-- ===================== 页脚 ===================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 蛋壳egg · 保留所有权利</p>
+      <p><a href="index.html">← 返回主页</a></p>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=2"></script>
+  <script src="js/editor.js?v=2"></script>
+</body>
+</html>

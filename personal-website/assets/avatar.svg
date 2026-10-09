@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <!-- 占位头像：把你的照片命名为 avatar.jpg 放到 assets 目录，
+       然后把 index.html 里的 assets/avatar.svg 改成 assets/avatar.jpg 即可 -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff71ce"/>
+      <stop offset="1" stop-color="#b967ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="#1f1040"/>
+  <rect width="400" height="400" fill="url(#g)" opacity="0.16"/>
+  <!-- 人形剪影 -->
+  <circle cx="200" cy="152" r="60" fill="url(#g)" opacity="0.9"/>
+  <path d="M92 336 a108 98 0 0 1 216 0 Z" fill="url(#g)" opacity="0.9"/>
+  <!-- 装饰网格 -->
+  <path d="M0 320 H400 M0 356 H400 M80 400 V348 M160 400 V348 M240 400 V348 M320 400 V348"
+        stroke="rgba(255,255,255,0.08)" stroke-width="2" fill="none"/>
+  <text x="200" y="388" text-anchor="middle" font-family="Consolas, monospace" font-size="15"
+        fill="rgba(255,255,255,0.45)">placeholder · 替换成你的照片</text>
+</svg>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>站点后台 · 蛋壳egg</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <main class="admin-wrap">
+    <div class="admin-card">
+      <div class="admin-logo">&lt;<span>蛋壳egg</span>&gt;</div>
+      <h1>站点后台</h1>
+      <p class="admin-sub">输入后台密码，开启网页编辑模式</p>
+
+      <form id="loginForm">
+        <input type="password" id="pwd" placeholder="后台密码" autocomplete="current-password">
+        <button type="submit" class="btn btn-primary">进入 →</button>
+      </form>
+
+      <p class="admin-error" id="err" hidden>✖ 密码不对，再试试</p>
+
+      <a class="admin-back" href="index.html">← 返回网站首页</a>
+    </div>
+  </main>
+
+  <script>
+    /* ★★★ 后台密码在这里改：改引号里的内容，保存后重新上传即可生效 ★★★ */
+    var ADMIN_PASSWORD = 'egg2026';
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var input = document.getElementById('pwd');
+      if (input.value === ADMIN_PASSWORD) {
+        try { localStorage.setItem('eggAdmin', '1'); } catch (err) {}
+        /* 登录后回到刚才浏览的页面（同站来源时），否则回首页 */
+        var back = (document.referrer && document.referrer.indexOf(location.origin) === 0)
+          ? document.referrer
+          : 'index.html';
+        location.href = back;
+      } else {
+        var err = document.getElementById('err');
+        err.hidden = false;
+        input.select();
+        var card = document.querySelector('.admin-card');
+        card.classList.remove('shake');
+        void card.offsetWidth;
+        card.classList.add('shake');
+      }
+    });
+  </script>
+</body>
+</html>
