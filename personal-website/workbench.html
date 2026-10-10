@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>综合工作台 · 待办 + 课程 + 通知</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --bg-primary: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #242424;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --border-color: #3a3a3a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* 顶部导航 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-info {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    /* 标签页导航 */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 15px;
+    }
+
+    .tab {
+      padding: 12px 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* 内容区域 */
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    /* 待办任务区域 */
+    .todo-section {
+      display: none;
+    }
+
+    .todo-section.active {
+      display: block;
+    }
+
+    .todo-input-area {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .todo-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .todo-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .todo-input:focus {
+      outline: none;
+      border-color: var(--accent-green);
+    }
+
+    .todo-filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .todo-filter {
+      padding: 8px 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .todo-filter:hover {
+      border-color: var(--accent-green);
+    }
+
+    .todo-filter.active {
+      background: var(--accent-green);
+      color: white;
+      border-color: var(--accent-green);
+    }
+
+    .todo-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .todo-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .todo-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-green);
+    }
+
+    .todo-item.completed {
+      opacity: 0.6;
+    }
+
+    .todo-checkbox {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-green);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .todo-checkbox:hover {
+      background: var(--accent-green);
+    }
+
+    .todo-checkbox.checked {
+      background: var(--accent-green);
+    }
+
+    .todo-content {
+      flex: 1;
+    }
+
+    .todo-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .todo-item.completed .todo-title {
+      text-decoration: line-through;
+    }
+
+    .todo-time {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .todo-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .todo-action-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .todo-action-btn.delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--accent-red);
+    }
+
+    .todo-action-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    /* 课程区域 */
+    .course-section {
+      display: none;
+    }
+
+    .course-section.active {
+      display: block;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-yellow);
+    }
+
+    .course-time {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .course-time-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-tertiary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: var(--accent-yellow);
+    }
+
+    .course-time-text {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .course-time-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .course-location {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+    }
+
+    .course-location-icon {
+      margin-right: 10px;
+      color: var(--accent-yellow);
+    }
+
+    .course-location-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .course-location-text strong {
+      color: var(--text-primary);
+    }
+
+    .course-info {
+      margin-bottom: 12px;
+    }
+
+    .course-info-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .course-info-value {
+      font-size: 16px;
+      color: var(--text-primary);
+      margin-top: 4px;
+    }
+
+    .course-status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .course-status.upcoming {
+      background: rgba(244, 208, 63, 0.2);
+      color: var(--accent-yellow);
+    }
+
+    .course-status.current {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    .course-status.past {
+      background: rgba(231, 76, 60, 0.2);
+      color: var(--accent-red);
+    }
+
+    /* 通知区域 */
+    .notification-section {
+      display: none;
+    }
+
+    .notification-section.active {
+      display: block;
+    }
+
+    .notification-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .notification-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .notification-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-blue);
+    }
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .notification-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .notification-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .notification-tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .tag-high {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+    }
+
+    .tag-medium {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-yellow);
+    }
+
+    .tag-low {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+    }
+
+    .notification-content {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--bg-tertiary);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .header-actions {
+        width: 100%;
+      }
+
+      .tabs {
+        overflow-x: auto;
+      }
+
+      .todo-input-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 头部 -->
+    <header class="header">
+      <div>
+        <h1 class="header-title">🚀 综合工作台</h1>
+        <p class="header-info">待办提醒 + 课程提醒 + 通知汇总 - 一站式管理</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="refreshAll()">🔄 刷新全部</button>
+        <button class="btn btn-primary" onclick="showAddTodoModal()">+ 添加待办</button>
+      </div>
+    </header>
+
+    <!-- 标签页导航 -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('todo')">📝 待办事项</button>
+      <button class="tab" onclick="switchTab('course')">📅 课程表</button>
+      <button class="tab" onclick="switchTab('notification')">📢 通知汇总</button>
+    </div>
+
+    <!-- 待办事项区域 -->
+    <div class="content-section active">
+      <div class="todo-section active">
+        <div class="todo-input-area">
+          <div class="todo-input-row">
+            <input type="text" class="todo-input" id="todoInput" placeholder="输入待办事项，例如：明天9点交报告 #工作" onkeypress="handleTodoKeypress(event)">
+            <button class="btn btn-primary" onclick="addTodo()">添加</button>
+          </div>
+        </div>
+
+        <div class="todo-filters">
+          <button class="todo-filter active" onclick="filterTodos('all')">全部</button>
+          <button class="todo-filter" onclick="filterTodos('active')">进行中</button>
+          <button class="todo-filter" onclick="filterTodos('completed')">已完成</button>
+        </div>
+
+        <div class="todo-list" id="todoList">
+          <!-- 待办事项将通过JavaScript动态生成 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 课程表区域 -->
+    <div class="content-section">
+      <div class="course-section">
+        <div class="course-grid" id="courseGrid">
+          <!-- 课程卡片将通过JavaScript动态生成 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 通知汇总区域 -->
+    <div class="content-section">
+      <div class="notification-section">
+        <div class="notification-list" id="notificationList">
+          <!-- 通知卡片将通过JavaScript动态生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加载动画 -->
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">正在加载...</p>
+  </div>
+
+  <script>
+    // 全局数据
+    let todos = [];
+    let courses = [];
+    let notifications = [];
+
+    // DOM元素
+    const todoList = document.getElementById('todoList');
+    const courseGrid = document.getElementById('courseGrid');
+    const notificationList = document.getElementById('notificationList');
+    const loading = document.getElementById('loading');
+    const todoInput = document.getElementById('todoInput');
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTodos();
+      loadCourses();
+      loadNotifications();
+      updateStats();
+    });
+
+    // 标签页切换
+    function switchTab(tabName) {
+      // 更新标签按钮状态
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // 更新内容区域
+      document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+      document.querySelector(`.${tabName}-section`).classList.add('active');
+    }
+
+    // 加载待办事项
+    function loadTodos() {
+      const savedTodos = localStorage.getItem('todos');
+      if (savedTodos) {
+        todos = JSON.parse(savedTodos);
+      } else {
+        // 示例数据
+        todos = [
+          { id: 1, title: '完成作业 #学习', time: '今天 18:00', completed: false, tag: '学习' },
+          { id: 2, title: '准备下周报告 #工作', time: '明天 09:00', completed: false, tag: '工作' },
+          { id: 3, title: '去医院体检', time: '周五 14:00', completed: true, tag: '生活' }
+        ];
+        localStorage.setItem('todos', JSON.stringify(todos));
+      }
+      renderTodos();
+    }
+
+    // 渲染待办事项
+    function renderTodos(filter = 'all') {
+      let filteredTodos = todos;
+      if (filter === 'active') {
+        filteredTodos = todos.filter(t => !t.completed);
+      } else if (filter === 'completed') {
+        filteredTodos = todos.filter(t => t.completed);
+      }
+
+      if (filteredTodos.length === 0) {
+        todoList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无待办事项</div>';
+        return;
+      }
+
+      todoList.innerHTML = filteredTodos.map(todo => `
+        <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+          <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo(${todo.id})">
+            ${todo.completed ? '✓' : ''}
+          </div>
+          <div class="todo-content">
+            <div class="todo-title">${escapeHtml(todo.title)}</div>
+            <div class="todo-time">⏰ ${todo.time} ${todo.tag ? '🏷️ ' + todo.tag : ''}</div>
+          </div>
+          <div class="todo-actions">
+            <button class="todo-action-btn delete" onclick="deleteTodo(${todo.id})">删除</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 添加待办事项
+    function addTodo() {
+      const title = todoInput.value.trim();
+      if (!title) {
+        alert('请输入待办事项');
+        return;
+      }
+
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+      const newTodo = {
+        id: Date.now(),
+        title: title,
+        time: timeStr,
+        completed: false,
+        tag: '通用'
+      };
+
+      todos.unshift(newTodo);
+      localStorage.setItem('todos', JSON.stringify(todos));
+      renderTodos();
+      todoInput.value = '';
+    }
+
+    // 切换待办状态
+    function toggleTodo(id) {
+      const todo = todos.find(t => t.id === id);
+      if (todo) {
+        todo.completed = !todo.completed;
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+      }
+    }
+
+    // 删除待办事项
+    function deleteTodo(id) {
+      if (confirm('确定要删除这条待办事项吗？')) {
+        todos = todos.filter(t => t.id !== id);
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+      }
+    }
+
+    // 筛选待办事项
+    function filterTodos(filter) {
+      document.querySelectorAll('.todo-filter').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderTodos(filter);
+    }
+
+    // 处理回车键
+    function handleTodoKeypress(event) {
+      if (event.key === 'Enter') {
+        addTodo();
+      }
+    }
+
+    // 加载课程表
+    function loadCourses() {
+      const savedCourses = localStorage.getItem('courses');
+      if (savedCourses) {
+        courses = JSON.parse(savedCourses);
+      } else {
+        // 示例数据
+        courses = [
+          {
+            id: 1,
+            time: '08:00 - 09:35',
+            location: '教学楼 A101',
+            subject: '高等数学',
+            teacher: '张教授',
+            status: 'upcoming',
+            day: 1,
+            week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+            startWeek: 1,
+            endWeek: 18
+          },
+          {
+            id: 2,
+            time: '10:00 - 11:35',
+            location: '教学楼 B202',
+            subject: '大学英语',
+            teacher: '李老师',
+            status: 'upcoming',
+            day: 2,
+            week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+            startWeek: 1,
+            endWeek: 18
+          }
+        ];
+        localStorage.setItem('courses', JSON.stringify(courses));
+      }
+      renderCourses();
+    }
+
+    // 渲染课程表
+    function renderCourses() {
+      if (courses.length === 0) {
+        courseGrid.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 60px 20px;">暂无课程</div>';
+        return;
+      }
+
+      courseGrid.innerHTML = courses.map(course => `
+        <div class="course-card">
+          <div class="course-time">
+            <div class="course-time-icon">🕐</div>
+            <div>
+              <div class="course-time-text">${course.time}</div>
+              <div class="course-time-sub">${formatTime(course.time)}</div>
+            </div>
+          </div>
+          <div class="course-location">
+            <span class="course-location-icon">📍</span>
+            <span class="course-location-text"><strong>${course.location}</strong></span>
+          </div>
+          <div class="course-info">
+            <div class="course-info-label">科目</div>
+            <div class="course-info-value">${course.subject}</div>
+          </div>
+          <div class="course-info">
+            <div class="course-info-label">老师</div>
+            <div class="course-info-value">${course.teacher}</div>
+          </div>
+          <div class="course-status ${course.status}">
+            ${getStatusText(course.status)}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 格式化时间
+    function formatTime(timeStr) {
+      const [start, end] = timeStr.split(' - ');
+      const startTime = parseTime(start);
+      const endTime = parseTime(end);
+      const hours = endTime - startTime;
+      return `${start} (${hours}节)`;
+    }
+
+    // 解析时间
+    function parseTime(timeStr) {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return hours * 60 + minutes;
+    }
+
+    // 获取状态文本
+    function getStatusText(status) {
+      const statusMap = {
+        'upcoming': '即将开始',
+        'current': '进行中',
+        'past': '已结束'
+      };
+      return statusMap[status] || '未知';
+    }
+
+    // 加载通知
+    function loadNotifications() {
+      const savedNotifications = localStorage.getItem('notifications');
+      if (savedNotifications) {
+        notifications = JSON.parse(savedNotifications);
+      } else {
+        // 示例数据
+        notifications = [
+          {
+            id: 1,
+            title: '关于期末考试安排的通知',
+            content: '请各位同学注意，本学期期末考试将于12月15日开始，具体安排请查阅教务系统。',
+            summary: '期末考试将于12月15日开始，请同学们提前查阅教务系统了解具体安排。',
+            importance: 'high',
+            date: '2026-10-09 10:00:00'
+          },
+          {
+            id: 2,
+            title: '关于秋季校园招聘会的通知',
+            content: '我校将于10月20日在体育馆举办秋季校园招聘会。',
+            summary: '10月20日在体育馆举办秋季校园招聘会，欢迎同学们前往参加。',
+            importance: 'high',
+            date: '2026-10-08 14:30:00'
+          }
+        ];
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+      }
+      renderNotifications();
+    }
+
+    // 渲染通知
+    function renderNotifications() {
+      if (notifications.length === 0) {
+        notificationList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无通知</div>';
+        return;
+      }
+
+      notificationList.innerHTML = notifications.map(notif => `
+        <div class="notification-card">
+          <div class="notification-header">
+            <div>
+              <h3 class="notification-title">${escapeHtml(notif.title)}</h3>
+              <div class="notification-meta">
+                <span class="notification-tag tag-${notif.importance}">${getImportanceLabel(notif.importance)}</span>
+                <span class="notification-date">📅 ${formatDate(notif.date)}</span>
+              </div>
+            </div>
+          </div>
+          <div class="notification-content">${escapeHtml(notif.content)}</div>
+        </div>
+      `).join<>();
+    }
+
+    // 获取重要程度标签
+    function getImportanceLabel(importance) {
+      const labels = {
+        high: '🔴 高优先级',
+        medium: '🟡 中优先级',
+        low: '🟢 低优先级'
+      };
+      return labels[importance];
+    }
+
+    // 格式化日期
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+
+    // HTML转义
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 更新统计
+    function updateStats() {
+      const activeTodos = todos.filter(t => !t.completed).length;
+      const completedTodos = todos.filter(t => t.completed).length;
+      const highPriorityNotifs = notifications.filter(n => n.importance === 'high').length;
+
+      console.log(`待办事项: ${activeTodos} 进行中, ${completedTodos} 已完成`);
+      console.log(`通知: ${highPriorityNotifs} 条高优先级`);
+    }
+
+    // 刷新全部
+    function refreshAll() {
+      loading.classList.add('active');
+      setTimeout(() => {
+        loadTodos();
+        loadCourses();
+        loadNotifications();
+        updateStats();
+        loading.classList.remove('active');
+        alert('刷新成功！');
+      }, 1000);
+    }
+
+    // 显示添加待办模态框
+    function showAddTodoModal() {
+      todoInput.focus();
+    }
+  </script>
+</body>
+</html>
