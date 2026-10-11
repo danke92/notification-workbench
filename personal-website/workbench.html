@@ -619,6 +619,8 @@
     let todos = [];
     let courses = [];
     let notifications = [];
+    let dataStore = null; // 存储引擎（localStorage 或内存）
+    let isLocalStorageAvailable = false;
 
     // DOM元素
     const todoList = document.getElementById('todoList');
@@ -629,11 +631,57 @@
 
     // 初始化
     document.addEventListener('DOMContentLoaded', () => {
+      checkStorageAvailability();
       loadTodos();
       loadCourses();
       loadNotifications();
       updateStats();
     });
+
+    // 检查存储可用性
+    function checkStorageAvailability() {
+      try {
+        const test = '__storage_test__';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        isLocalStorageAvailable = true;
+        dataStore = localStorage;
+        console.log('✅ 使用 localStorage 存储数据');
+      } catch (e) {
+        isLocalStorageAvailable = false;
+        dataStore = null;
+        console.warn('⚠️ localStorage 不可用，使用内存存储（数据将在页面刷新后丢失）');
+      }
+    }
+
+    // 安全存储
+    function safeStorageSet(key, value) {
+      if (!isLocalStorageAvailable) {
+        console.warn('⚠️ 无法保存数据到 localStorage，使用内存存储');
+        return false;
+      }
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+      } catch (e) {
+        console.error('❌ 存储失败:', e);
+        return false;
+      }
+    }
+
+    // 安全读取
+    function safeStorageGet(key, defaultValue = null) {
+      if (!isLocalStorageAvailable) {
+        return defaultValue;
+      }
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : defaultValue;
+      } catch (e) {
+        console.error('❌ 读取失败:', e);
+        return defaultValue;
+      }
+    }
 
     // 标签页切换
     function switchTab(tabName) {
@@ -648,100 +696,147 @@
 
     // 加载待办事项
     function loadTodos() {
-      const savedTodos = localStorage.getItem('todos');
-      if (savedTodos) {
-        todos = JSON.parse(savedTodos);
-      } else {
-        // 示例数据
-        todos = [
-          { id: 1, title: '完成作业 #学习', time: '今天 18:00', completed: false, tag: '学习' },
-          { id: 2, title: '准备下周报告 #工作', time: '明天 09:00', completed: false, tag: '工作' },
-          { id: 3, title: '去医院体检', time: '周五 14:00', completed: true, tag: '生活' }
-        ];
-        localStorage.setItem('todos', JSON.stringify(todos));
+      try {
+        const savedTodos = safeStorageGet('todos', null);
+        if (savedTodos) {
+          todos = savedTodos;
+          console.log(`✅ 已加载 ${todos.length} 条待办事项`);
+        } else {
+          // 示例数据
+          todos = [
+            { id: 1, title: '完成作业 #学习', time: '今天 18:00', completed: false, tag: '学习' },
+            { id: 2, title: '准备下周报告 #工作', time: '明天 09:00', completed: false, tag: '工作' },
+            { id: 3, title: '去医院体检', time: '周五 14:00', completed: true, tag: '生活' }
+          ];
+          safeStorageSet('todos', todos);
+          console.log('✅ 已创建示例待办事项');
+        }
+        renderTodos();
+      } catch (e) {
+        console.error('❌ 加载待办事项失败:', e);
+        alert('加载待办事项失败，请刷新页面重试');
       }
-      renderTodos();
     }
 
     // 渲染待办事项
     function renderTodos(filter = 'all') {
-      let filteredTodos = todos;
-      if (filter === 'active') {
-        filteredTodos = todos.filter(t => !t.completed);
-      } else if (filter === 'completed') {
-        filteredTodos = todos.filter(t => t.completed);
-      }
+      try {
+        let filteredTodos = todos;
+        if (filter === 'active') {
+          filteredTodos = todos.filter(t => !t.completed);
+        } else if (filter === 'completed') {
+          filteredTodos = todos.filter(t => t.completed);
+        }
 
-      if (filteredTodos.length === 0) {
-        todoList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无待办事项</div>';
-        return;
-      }
+        if (filteredTodos.length === 0) {
+          todoList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无待办事项</div>';
+          return;
+        }
 
-      todoList.innerHTML = filteredTodos.map(todo => `
-        <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
-          <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo(${todo.id})">
-            ${todo.completed ? '✓' : ''}
-          </div>
-          <div class="todo-content">
-            <div class="todo-title">${escapeHtml(todo.title)}</div>
-            <div class="todo-time">⏰ ${todo.time} ${todo.tag ? '🏷️ ' + todo.tag : ''}</div>
-          </div>
-          <div class="todo-actions">
-            <button class="todo-action-btn delete" onclick="deleteTodo(${todo.id})">删除</button>
-          </div>
-        </div>
-      `).join('');
+        todoList.innerHTML = filteredTodos.map(todo => {
+          // 安全的 ID 转换
+          const safeId = String(todo.id);
+          // 安全的 HTML 转义
+          const safeTitle = escapeHtml(todo.title);
+          const safeTag = todo.tag ? escapeHtml(todo.tag) : '';
+          // 安全的事件处理
+          const onclickToggle = `toggleTodo('${safeId}')`;
+          const onclickDelete = `deleteTodo('${safeId}')`;
+
+          return `
+            <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${safeId}">
+              <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="${onclickToggle}">
+                ${todo.completed ? '✓' : ''}
+              </div>
+              <div class="todo-content">
+                <div class="todo-title">${safeTitle}</div>
+                <div class="todo-time">⏰ ${todo.time} ${safeTag ? '🏷️ ' + safeTag : ''}</div>
+              </div>
+              <div class="todo-actions">
+                <button class="todo-action-btn delete" onclick="${onclickDelete}">删除</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('❌ 渲染待办事项失败:', e);
+        todoList.innerHTML = '<div style="text-align: center; color: var(--accent-red); padding: 40px;">渲染失败，请刷新页面重试</div>';
+      }
     }
 
     // 添加待办事项
     function addTodo() {
-      const title = todoInput.value.trim();
-      if (!title) {
-        alert('请输入待办事项');
-        return;
+      try {
+        const title = todoInput.value.trim();
+        if (!title) {
+          alert('请输入待办事项');
+          return;
+        }
+
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+        // 验证数据
+        const newTodo = {
+          id: Date.now(),
+          title: title,
+          time: timeStr,
+          completed: false,
+          tag: '通用'
+        };
+
+        todos.unshift(newTodo);
+        safeStorageSet('todos', todos);
+        renderTodos();
+        todoInput.value = '';
+        console.log('✅ 已添加待办事项:', newTodo.title);
+      } catch (e) {
+        console.error('❌ 添加待办事项失败:', e);
+        alert('添加待办事项失败，请重试');
       }
-
-      const now = new Date();
-      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-      const newTodo = {
-        id: Date.now(),
-        title: title,
-        time: timeStr,
-        completed: false,
-        tag: '通用'
-      };
-
-      todos.unshift(newTodo);
-      localStorage.setItem('todos', JSON.stringify(todos));
-      renderTodos();
-      todoInput.value = '';
     }
 
     // 切换待办状态
     function toggleTodo(id) {
-      const todo = todos.find(t => t.id === id);
-      if (todo) {
-        todo.completed = !todo.completed;
-        localStorage.setItem('todos', JSON.stringify(todos));
-        renderTodos();
+      try {
+        const safeId = String(id);
+        const todo = todos.find(t => String(t.id) === safeId);
+        if (todo) {
+          todo.completed = !todo.completed;
+          safeStorageSet('todos', todos);
+          renderTodos();
+          console.log(`✅ 已${todo.completed ? '完成' : '取消完成'}待办事项: ${todo.title}`);
+        }
+      } catch (e) {
+        console.error('❌ 切换待办状态失败:', e);
       }
     }
 
     // 删除待办事项
     function deleteTodo(id) {
-      if (confirm('确定要删除这条待办事项吗？')) {
-        todos = todos.filter(t => t.id !== id);
-        localStorage.setItem('todos', JSON.stringify(todos));
-        renderTodos();
+      try {
+        const safeId = String(id);
+        const todo = todos.find(t => String(t.id) === safeId);
+        if (todo && confirm(`确定要删除这条待办事项吗？\n\n${todo.title}`)) {
+          todos = todos.filter(t => String(t.id) !== safeId);
+          safeStorageSet('todos', todos);
+          renderTodos();
+          console.log('✅ 已删除待办事项:', todo.title);
+        }
+      } catch (e) {
+        console.error('❌ 删除待办事项失败:', e);
       }
     }
 
     // 筛选待办事项
     function filterTodos(filter) {
-      document.querySelectorAll('.todo-filter').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      renderTodos(filter);
+      try {
+        document.querySelectorAll('.todo-filter').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        renderTodos(filter);
+      } catch (e) {
+        console.error('❌ 筛选待办事项失败:', e);
+      }
     }
 
     // 处理回车键
@@ -753,75 +848,95 @@
 
     // 加载课程表
     function loadCourses() {
-      const savedCourses = localStorage.getItem('courses');
-      if (savedCourses) {
-        courses = JSON.parse(savedCourses);
-      } else {
-        // 示例数据
-        courses = [
-          {
-            id: 1,
-            time: '08:00 - 09:35',
-            location: '教学楼 A101',
-            subject: '高等数学',
-            teacher: '张教授',
-            status: 'upcoming',
-            day: 1,
-            week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-            startWeek: 1,
-            endWeek: 18
-          },
-          {
-            id: 2,
-            time: '10:00 - 11:35',
-            location: '教学楼 B202',
-            subject: '大学英语',
-            teacher: '李老师',
-            status: 'upcoming',
-            day: 2,
-            week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-            startWeek: 1,
-            endWeek: 18
-          }
-        ];
-        localStorage.setItem('courses', JSON.stringify(courses));
+      try {
+        const savedCourses = safeStorageGet('courses', null);
+        if (savedCourses) {
+          courses = savedCourses;
+          console.log(`✅ 已加载 ${courses.length} 门课程`);
+        } else {
+          // 示例数据
+          courses = [
+            {
+              id: 1,
+              time: '08:00 - 09:35',
+              location: '教学楼 A101',
+              subject: '高等数学',
+              teacher: '张教授',
+              status: 'upcoming',
+              day: 1,
+              week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+              startWeek: 1,
+              endWeek: 18
+            },
+            {
+              id: 2,
+              time: '10:00 - 11:35',
+              location: '教学楼 B202',
+              subject: '大学英语',
+              teacher: '李老师',
+              status: 'upcoming',
+              day: 2,
+              week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+              startWeek: 1,
+              endWeek: 18
+            }
+          ];
+          safeStorageSet('courses', courses);
+          console.log('✅ 已创建示例课程');
+        }
+        renderCourses();
+      } catch (e) {
+        console.error('❌ 加载课程表失败:', e);
+        alert('加载课程表失败，请刷新页面重试');
       }
-      renderCourses();
     }
 
     // 渲染课程表
     function renderCourses() {
-      if (courses.length === 0) {
-        courseGrid.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 60px 20px;">暂无课程</div>';
-        return;
-      }
+      try {
+        if (courses.length === 0) {
+          courseGrid.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 60px 20px;">暂无课程</div>';
+          return;
+        }
 
-      courseGrid.innerHTML = courses.map(course => `
-        <div class="course-card">
-          <div class="course-time">
-            <div class="course-time-icon">🕐</div>
-            <div>
-              <div class="course-time-text">${course.time}</div>
-              <div class="course-time-sub">${formatTime(course.time)}</div>
+        courseGrid.innerHTML = courses.map(course => {
+          // 安全的 HTML 转义
+          const safeLocation = escapeHtml(course.location);
+          const safeSubject = escapeHtml(course.subject);
+          const safeTeacher = escapeHtml(course.teacher);
+          const safeStatus = escapeHtml(getStatusText(course.status));
+
+          return `
+            <div class="course-card">
+              <div class="course-time">
+                <div class="course-time-icon">🕐</div>
+                <div>
+                  <div class="course-time-text">${course.time}</div>
+                  <div class="course-time-sub">${formatTime(course.time)}</div>
+                </div>
+              </div>
+              <div class="course-location">
+                <span class="course-location-icon">📍</span>
+                <span class="course-location-text"><strong>${safeLocation}</strong></span>
+              </div>
+              <div class="course-info">
+                <div class="course-info-label">科目</div>
+                <div class="course-info-value">${safeSubject}</div>
+              </div>
+              <div class="course-info">
+                <div class="course-info-label">老师</div>
+                <div class="course-info-value">${safeTeacher}</div>
+              </div>
+              <div class="course-status ${course.status}">
+                ${safeStatus}
+              </div>
             </div>
-          </div>
-          <div class="course-location">
-            <span class="course-location-icon">📍</span>
-            <span class="course-location-text"><strong>${course.location}</strong></span>
-          </div>
-          <div class="course-info">
-            <div class="course-info-label">科目</div>
-            <div class="course-info-value">${course.subject}</div>
-          </div>
-          <div class="course-info">
-            <div class="course-info-label">老师</div>
-            <div class="course-info-value">${course.teacher}</div>
-          </div>
-          <div class="course-status ${course.status}">
-            ${getStatusText(course.status)}
-          </div>
-        </div>
-      `).join('');
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('❌ 渲染课程表失败:', e);
+        courseGrid.innerHTML = '<div style="text-align: center; color: var(--accent-red); padding: 40px;">渲染失败，请刷新页面重试</div>';
+      }
     }
 
     // 格式化时间
@@ -851,55 +966,75 @@
 
     // 加载通知
     function loadNotifications() {
-      const savedNotifications = localStorage.getItem('notifications');
-      if (savedNotifications) {
-        notifications = JSON.parse(savedNotifications);
-      } else {
-        // 示例数据
-        notifications = [
-          {
-            id: 1,
-            title: '关于期末考试安排的通知',
-            content: '请各位同学注意，本学期期末考试将于12月15日开始，具体安排请查阅教务系统。',
-            summary: '期末考试将于12月15日开始，请同学们提前查阅教务系统了解具体安排。',
-            importance: 'high',
-            date: '2026-10-09 10:00:00'
-          },
-          {
-            id: 2,
-            title: '关于秋季校园招聘会的通知',
-            content: '我校将于10月20日在体育馆举办秋季校园招聘会。',
-            summary: '10月20日在体育馆举办秋季校园招聘会，欢迎同学们前往参加。',
-            importance: 'high',
-            date: '2026-10-08 14:30:00'
-          }
-        ];
-        localStorage.setItem('notifications', JSON.stringify(notifications));
+      try {
+        const savedNotifications = safeStorageGet('notifications', null);
+        if (savedNotifications) {
+          notifications = savedNotifications;
+          console.log(`✅ 已加载 ${notifications.length} 条通知`);
+        } else {
+          // 示例数据
+          notifications = [
+            {
+              id: 1,
+              title: '关于期末考试安排的通知',
+              content: '请各位同学注意，本学期期末考试将于12月15日开始，具体安排请查阅教务系统。',
+              summary: '期末考试将于12月15日开始，请同学们提前查阅教务系统了解具体安排。',
+              importance: 'high',
+              date: '2026-10-09 10:00:00'
+            },
+            {
+              id: 2,
+              title: '关于秋季校园招聘会的通知',
+              content: '我校将于10月20日在体育馆举办秋季校园招聘会。',
+              summary: '10月20日在体育馆举办秋季校园招聘会，欢迎同学们前往参加。',
+              importance: 'high',
+              date: '2026-10-08 14:30:00'
+            }
+          ];
+          safeStorageSet('notifications', notifications);
+          console.log('✅ 已创建示例通知');
+        }
+        renderNotifications();
+      } catch (e) {
+        console.error('❌ 加载通知失败:', e);
+        alert('加载通知失败，请刷新页面重试');
       }
-      renderNotifications();
     }
 
     // 渲染通知
     function renderNotifications() {
-      if (notifications.length === 0) {
-        notificationList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无通知</div>';
-        return;
-      }
+      try {
+        if (notifications.length === 0) {
+          notificationList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无通知</div>';
+          return;
+        }
 
-      notificationList.innerHTML = notifications.map(notif => `
-        <div class="notification-card">
-          <div class="notification-header">
-            <div>
-              <h3 class="notification-title">${escapeHtml(notif.title)}</h3>
-              <div class="notification-meta">
-                <span class="notification-tag tag-${notif.importance}">${getImportanceLabel(notif.importance)}</span>
-                <span class="notification-date">📅 ${formatDate(notif.date)}</span>
+        notificationList.innerHTML = notifications.map(notif => {
+          // 安全的 HTML 转义
+          const safeTitle = escapeHtml(notif.title);
+          const safeContent = escapeHtml(notif.content);
+          const safeDate = formatDate(notif.date);
+          const safeImportance = escapeHtml(getImportanceLabel(notif.importance));
+
+          return `
+            <div class="notification-card">
+              <div class="notification-header">
+                <div>
+                  <h3 class="notification-title">${safeTitle}</h3>
+                  <div class="notification-meta">
+                    <span class="notification-tag tag-${notif.importance}">${safeImportance}</span>
+                    <span class="notification-date">📅 ${safeDate}</span>
+                  </div>
+                </div>
               </div>
+              <div class="notification-content">${safeContent}</div>
             </div>
-          </div>
-          <div class="notification-content">${escapeHtml(notif.content)}</div>
-        </div>
-      `).join<>();
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('❌ 渲染通知失败:', e);
+        notificationList.innerHTML = '<div style="text-align: center; color: var(--accent-red); padding: 40px;">渲染失败，请刷新页面重试</div>';
+      }
     }
 
     // 获取重要程度标签
@@ -922,11 +1057,19 @@
       });
     }
 
-    // HTML转义
+    // HTML转义（更安全的实现）
     function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
+      if (typeof text !== 'string') {
+        return text;
+      }
+
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
     }
 
     // 更新统计
@@ -941,15 +1084,21 @@
 
     // 刷新全部
     function refreshAll() {
-      loading.classList.add('active');
-      setTimeout(() => {
-        loadTodos();
-        loadCourses();
-        loadNotifications();
-        updateStats();
+      try {
+        loading.classList.add('active');
+        setTimeout(() => {
+          loadTodos();
+          loadCourses();
+          loadNotifications();
+          updateStats();
+          loading.classList.remove('active');
+          alert('刷新成功！');
+        }, 1000);
+      } catch (e) {
+        console.error('❌ 刷新失败:', e);
         loading.classList.remove('active');
-        alert('刷新成功！');
-      }, 1000);
+        alert('刷新失败，请重试');
+      }
     }
 
     // 显示添加待办模态框

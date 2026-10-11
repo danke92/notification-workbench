@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程提醒工作台</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2a2a2a;
+            --bg-tertiary: #3a3a3a;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --accent-yellow: #f4d03f;
+            --accent-yellow-dark: #d4ac0d;
+            --border-color: #3a3a3a;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 登录界面 */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .login-card {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--accent-yellow);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 0 3px rgba(244, 208, 63, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-yellow-dark) 100%);
+            border: none;
+            border-radius: 8px;
+            color: #1a1a1a;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244, 208, 63, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        /* 主界面 */
+        .main-screen {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-title {
+            font-size: 28px;
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        .header-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .schedule-card {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-yellow);
+        }
+
+        .schedule-time {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .schedule-time-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+            color: var(--accent-yellow);
+        }
+
+        .schedule-time-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .schedule-time-sub {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .schedule-location {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 12px;
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+        }
+
+        .schedule-location-icon {
+            margin-right: 10px;
+            color: var(--accent-yellow);
+        }
+
+        .schedule-location-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .schedule-location-text strong {
+            color: var(--text-primary);
+        }
+
+        .schedule-info {
+            margin-bottom: 12px;
+        }
+
+        .schedule-info-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .schedule-info-value {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+
+        .schedule-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .schedule-status.upcoming {
+            background-color: rgba(244, 208, 63, 0.1);
+            color: var(--accent-yellow);
+        }
+
+        .schedule-status.current {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .schedule-status.past {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        /* 学期课表样式 */
+        .semester-view {
+            display: none;
+        }
+
+        .semester-view.active {
+            display: block;
+        }
+
+        .semester-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .semester-title {
+            font-size: 28px;
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        .semester-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .semester-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .semester-tab {
+            padding: 12px 24px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .semester-tab:hover {
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        .semester-tab.active {
+            background-color: var(--accent-yellow);
+            color: #1a1a1a;
+            border-color: var(--accent-yellow);
+        }
+
+        .semester-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            gap: 1px;
+            background-color: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            min-width: 1000px;
+        }
+
+        .semester-cell {
+            background-color: var(--bg-secondary);
+            padding: 16px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            word-break: break-word;
+        }
+
+        .semester-cell.header {
+            min-height: 60px;
+        }
+
+        .semester-cell:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .semester-cell.header {
+            background-color: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--accent-yellow);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .semester-cell.empty {
+            background-color: var(--bg-primary);
+        }
+
+        .semester-course {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        .semester-course:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .semester-course-time {
+            font-size: 12px;
+            color: var(--accent-yellow);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .semester-course-subject {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .semester-course-location {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .semester-course-teacher {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .semester-week-range {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .semester-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-color.upcoming {
+            background-color: rgba(244, 208, 63, 0.2);
+            border: 1px solid var(--accent-yellow);
+        }
+
+        .legend-color.current {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--success);
+        }
+
+        .legend-color.past {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid var(--danger);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* 倒计时弹窗 */
+        .countdown-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .countdown-modal.active {
+            display: flex;
+        }
+
+        .countdown-content {
+            background-color: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid var(--accent-yellow);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .countdown-title {
+            font-size: 32px;
+            color: var(--accent-yellow);
+            margin-bottom: 20px;
+        }
+
+        .countdown-timer {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+
+        .countdown-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .countdown-course {
+            background-color: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .countdown-course-title {
+            font-size: 20px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .countdown-course-info {
+            display: flex;
+            justify-content: space-around;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .countdown-course-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--bg-tertiary);
+            border-top-color: var(--accent-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* 提示信息 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-subtext {
+            font-size: 14px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .countdown-timer {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h1 class="login-title">课程提醒工作台</h1>
+            <div class="form-group">
+                <label class="form-label">学号/账号</label>
+                <input type="text" class="form-input" id="username" placeholder="请输入学号" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" class="form-input" id="password" placeholder="请输入密码" autocomplete="current-password">
+            </div>
+            <button class="btn" id="loginBtn">登录</button>
+            <button class="btn btn-secondary" id="demoBtn">使用演示数据</button>
+        </div>
+    </div>
+
+    <!-- 加载界面 -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">正在登录教务系统...</p>
+    </div>
+
+        <!-- 主界面 -->
+        <div class="container main-screen" id="mainScreen">
+            <header class="header">
+                <div>
+                    <h1 class="header-title" id="viewTitle">今日课程</h1>
+                    <p class="header-info" id="currentDate"></p>
+                </div>
+                <div>
+                    <button class="btn" style="width: auto; padding: 12px 24px;" id="refreshBtn">刷新</button>
+                    <button class="btn btn-secondary" style="width: auto; padding: 12px 24px; margin-left: 10px;" id="logoutBtn">退出</button>
+                </div>
+            </header>
+
+            <!-- 视图切换标签 -->
+            <div class="semester-tabs">
+                <button class="semester-tab active" id="todayTab">今日课程</button>
+                <button class="semester-tab" id="semesterTab">学期课表</button>
+            </div>
+
+            <!-- 今日课程视图 -->
+            <div class="schedule-view">
+                <div class="schedule-grid" id="scheduleGrid">
+                    <!-- 课程卡片将通过JavaScript动态生成 -->
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-state-icon">📚</div>
+                    <p class="empty-state-text">今天没有课程</p>
+                    <p class="empty-state-subtext">享受你的自由时间吧！</p>
+                </div>
+            </div>
+
+            <!-- 学期课表视图 -->
+            <div class="semester-view" id="semesterView">
+                <div class="semester-grid" id="semesterGrid">
+                    <!-- 学期课表将通过JavaScript动态生成 -->
+                </div>
+
+                <div class="semester-legend">
+                    <div class="legend-item">
+                        <div class="legend-color upcoming"></div>
+                        <span>即将开始</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color current"></div>
+                        <span>进行中</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color past"></div>
+                        <span>已结束</span>
+                    </div>
+                    <div class="legend-item">
+                        <span>提示：点击课程卡片可查看详情</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- 倒计时弹窗 -->
+    <div class="countdown-modal" id="countdownModal">
+        <div class="countdown-content">
+            <h2 class="countdown-title">课程即将开始</h2>
+            <div class="countdown-timer" id="countdownTimer">00:00:00</div>
+            <p class="countdown-subtitle">距离上课还有</p>
+            <div class="countdown-course">
+                <h3 class="countdown-course-title" id="countdownCourseTitle"></h3>
+                <div class="countdown-course-info">
+                    <span id="countdownTeacher">👨‍🏫 老师</span>
+                    <span id="countdownLocation">📍 地点</span>
+                </div>
+            </div>
+            <button class="btn" id="closeCountdown">关闭</button>
+        </div>
+    </div>
+
+    <!-- 提示信息 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局变量
+        let currentCourses = [];
+        let countdownInterval = null;
+        let currentView = 'today'; // 'today' 或 'semester'
+
+        // DOM元素
+        const loginScreen = document.getElementById('loginScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const loading = document.getElementById('loading');
+        const scheduleGrid = document.getElementById('scheduleGrid');
+        const emptyState = document.getElementById('emptyState');
+        const semesterView = document.getElementById('semesterView');
+        const semesterGrid = document.getElementById('semesterGrid');
+        const countdownModal = document.getElementById('countdownModal');
+        const toast = document.getElementById('toast');
+        const todayTab = document.getElementById('todayTab');
+        const semesterTab = document.getElementById('semesterTab');
+        const viewTitle = document.getElementById('viewTitle');
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            updateCurrentDate();
+            startNotificationCheck();
+        });
+
+        // 检查登录状态
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                showMainScreen();
+            }
+        }
+
+        // 更新当前日期
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+
+        // 显示主界面
+        function showMainScreen() {
+            loginScreen.style.display = 'none';
+            mainScreen.style.display = 'block';
+            loadCourses();
+        }
+
+        // 显示登录界面
+        function showLoginScreen() {
+            loginScreen.style.display = 'flex';
+            mainScreen.style.display = 'none';
+        }
+
+        // 登录
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                showToast('请输入学号和密码', 'error');
+                return;
+            }
+
+            loading.classList.add('active');
+
+            try {
+                // 实际应用中，这里应该使用fetch或axios向教务系统发送登录请求
+                // 由于教务系统可能有复杂的登录机制（验证码、CSRF等），这里使用模拟登录
+                await simulateLogin(username, password);
+
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+
+                showToast('登录成功！', 'success');
+                showMainScreen();
+            } catch (error) {
+                showToast('登录失败，请检查账号密码', 'error');
+                console.error('Login error:', error);
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // 模拟登录
+        async function simulateLogin(username, password) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // 这里应该替换为实际的登录请求
+                    // fetch('https://jwxt.sztu.edu.cn/jsxsd/framework/xsMain.htmlx', {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/x-www-form-urlencoded',
+                    //     },
+                    //     body: `username=${username}&password=${password}`
+                    // })
+                    //     .then(response => response.text())
+                    //     .then(data => {
+                    //         // 解析课程信息
+                    //         const courses = parseCoursesFromHTML(data);
+                    //         resolve(courses);
+                    //     });
+
+                    // 模拟成功
+                    resolve();
+                }, 1500);
+            });
+        }
+
+        // 使用演示数据
+        document.getElementById('demoBtn').addEventListener('click', () => {
+            const demoCourses = [
+                {
+                    id: 1,
+                    time: '08:00 - 09:35',
+                    location: '教学楼 A101',
+                    subject: '高等数学',
+                    teacher: '张教授',
+                    status: 'upcoming',
+                    day: 1, // 周一
+                    week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    startWeek: 1,
+                    endWeek: 18
+                },
+                {
+                    id: 2,
+                    time: '10:00 - 11:35',
+                    location: '教学楼 B202',
+                    subject: '大学英语',
+                    teacher: '李老师',
+                    status: 'upcoming',
+                    day: 2, // 周二
+                    week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    startWeek: 1,
+                    endWeek: 18
+                },
+                {
+                    id: 3,
+                    time: '14:00 - 15:35',
+                    location: '实验楼 C305',
+                    subject: '程序设计基础',
+                    teacher: '王老师',
+                    status: 'upcoming',
+                    day: 3, // 周三
+                    week: [2, 4, 6, 8, 10, 12, 14, 16, 18],
+                    startWeek: 2,
+                    endWeek: 18
+                },
+                {
+                    id: 4,
+                    time: '16:00 - 17:35',
+                    location: '教学楼 A205',
+                    subject: '马克思主义原理',
+                    teacher: '陈老师',
+                    status: 'upcoming',
+                    day: 4, // 周四
+                    week: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                    startWeek: 1,
+                    endWeek: 18
+                },
+                {
+                    id: 5,
+                    time: '08:00 - 09:35',
+                    location: '教学楼 B301',
+                    subject: '数据结构',
+                    teacher: '刘老师',
+                    status: 'upcoming',
+                    day: 5, // 周五
+                    week: [3, 6, 9, 12, 15, 18],
+                    startWeek: 3,
+                    endWeek: 18
+                },
+                {
+                    id: 6,
+                    time: '10:00 - 11:35',
+                    location: '教学楼 C401',
+                    subject: '操作系统',
+                    teacher: '赵老师',
+                    status: 'upcoming',
+                    day: 1, // 周一
+                    week: [4, 8, 12, 16],
+                    startWeek: 4,
+                    endWeek: 18
+                }
+            ];
+
+            currentCourses = demoCourses;
+            localStorage.setItem('courses', JSON.stringify(demoCourses));
+            showMainScreen();
+            showToast('已加载演示数据', 'success');
+        });
+
+        // 加载课程
+        function loadCourses() {
+            const savedCourses = localStorage.getItem('courses');
+            if (savedCourses) {
+                currentCourses = JSON.parse(savedCourses);
+            } else {
+                // 尝试从教务系统获取
+                fetchCoursesFromSystem();
+            }
+
+            renderCourses();
+            renderSemesterSchedule();
+        }
+
+        // 从教务系统获取课程
+        async function fetchCoursesFromSystem() {
+            loading.classList.add('active');
+
+            try {
+                // 这里应该使用实际的教务系统API
+                // fetch('https://jwxt.sztu.edu.cn/jsxsd/xskb/xskbList.do', {
+                //     method: 'GET',
+                //     headers: {
+                //         'Cookie': getAuthCookie()
+                //     }
+                // })
+                //     .then(response => response.text())
+                //     .then(data => {
+                //         const courses = parseCoursesFromHTML(data);
+                //         currentCourses = courses;
+                //         localStorage.setItem('courses', JSON.stringify(courses));
+                //         renderCourses();
+                //         loading.classList.remove('active');
+                //     });
+
+                // 模拟获取数据
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                showToast('未找到课程数据，请使用演示数据', 'error');
+                loading.classList.remove('active');
+            } catch (error) {
+                console.error('Fetch courses error:', error);
+                showToast('获取课程失败', 'error');
+                loading.classList.remove('active');
+            }
+        }
+
+        // 解析课程HTML
+        function parseCoursesFromHTML(html) {
+            // 这里应该实现实际的HTML解析逻辑
+            // 返回课程数组
+            return [];
+        }
+
+        // 渲染课程
+        function renderCourses() {
+            if (currentCourses.length === 0) {
+                scheduleGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            scheduleGrid.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            scheduleGrid.innerHTML = currentCourses.map(course => `
+                <div class="schedule-card" data-id="${course.id}" onclick="showCourseDetail('${course.id}')">
+                    <div class="schedule-time">
+                        <div class="schedule-time-icon">🕐</div>
+                        <div>
+                            <div class="schedule-time-text">${course.time}</div>
+                            <div class="schedule-time-sub">${formatTime(course.time)}</div>
+                        </div>
+                    </div>
+                    <div class="schedule-location">
+                        <span class="schedule-location-icon">📍</span>
+                        <span class="schedule-location-text"><strong>${course.location}</strong></span>
+                    </div>
+                    <div class="schedule-info">
+                        <div class="schedule-info-label">科目</div>
+                        <div class="schedule-info-value">${course.subject}</div>
+                    </div>
+                    <div class="schedule-info">
+                        <div class="schedule-info-label">老师</div>
+                        <div class="schedule-info-value">${course.teacher}</div>
+                    </div>
+                    <div class="schedule-status ${course.status}" id="status-${course.id}">
+                        ${getStatusText(course.status)}
+                    </div>
+                </div>
+            `).join('');
+
+            // 更新课程状态
+            updateCourseStatus();
+        }
+
+        // 渲染学期课表
+        function renderSemesterSchedule() {
+            if (currentCourses.length === 0) {
+                semesterGrid.style.display = 'none';
+                return;
+            }
+
+            semesterGrid.style.display = 'grid';
+            semesterGrid.innerHTML = '';
+
+            // 创建表头
+            const headerRow = document.createElement('div');
+            headerRow.className = 'semester-cell header';
+            headerRow.textContent = '时间';
+            semesterGrid.appendChild(headerRow);
+
+            // 添加星期列
+            const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            weekDays.forEach(day => {
+                const cell = document.createElement('div');
+                cell.className = 'semester-cell header';
+                cell.textContent = day;
+                semesterGrid.appendChild(cell);
+            });
+
+            // 创建课程行
+            for (let hour = 1; hour <= 12; hour++) {
+                // 时间列
+                const timeCell = document.createElement('div');
+                timeCell.className = 'semester-cell';
+                timeCell.innerHTML = `<div style="font-weight:600; color:var(--accent-yellow);">${hour}:00</div><div style="font-size:12px; color:var(--text-secondary);">${hour}:35</div>`;
+                semesterGrid.appendChild(timeCell);
+
+                // 星期列
+                for (let day = 1; day <= 7; day++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'semester-cell';
+
+                    // 查找当天该时间的课程
+                    const course = currentCourses.find(c => c.day === day && isCourseAtTime(c, hour));
+
+                    if (course) {
+                        cell.innerHTML = `
+                            <div class="semester-course" onclick="showCourseDetail('${course.id}')">
+                                <div class="semester-course-time">${course.time}</div>
+                                <div class="semester-course-subject">${course.subject}</div>
+                                <div class="semester-course-location">📍 ${course.location}</div>
+                                <div class="semester-course-teacher">👨‍🏫 ${course.teacher}</div>
+                                <div class="semester-week-range">📅 第${course.startWeek}-${course.endWeek}周</div>
+                            </div>
+                        `;
+                    } else {
+                        cell.className += ' empty';
+                    }
+
+                    semesterGrid.appendChild(cell);
+                }
+            }
+        }
+
+        // 判断课程是否在指定时间
+        function isCourseAtTime(course, hour) {
+            const [startHour, startMin] = course.time.split(' - ')[0].split(':').map(Number);
+            const [endHour, endMin] = course.time.split(' - ')[1].split(':').map(Number);
+
+            if (hour < startHour) return false;
+            if (hour > endHour) return false;
+            if (hour === startHour && hour === endHour) return true;
+            if (hour === startHour) return true;
+            if (hour === endHour) return true;
+
+            return false;
+        }
+
+        // 显示课程详情
+        function showCourseDetail(courseId) {
+            const course = currentCourses.find(c => c.id == courseId);
+            if (!course) return;
+
+            const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            const weekRange = course.week && course.week.length > 0
+                ? `第${course.startWeek}-${course.endWeek}周（共${course.week.length}次）`
+                : '本学期';
+
+            alert(`课程详情\n\n` +
+                `📅 时间：${course.time}\n` +
+                `📆 星期：${days[course.day - 1]}\n` +
+                `📅 周次范围：${weekRange}\n` +
+                `📍 地点：${course.location}\n` +
+                `📚 科目：${course.subject}\n` +
+                `👨‍🏫 老师：${course.teacher}`);
+        }
+
+        // 格式化时间
+        function formatTime(timeStr) {
+            const [start, end] = timeStr.split(' - ');
+            const startTime = parseTime(start);
+            const endTime = parseTime(end);
+
+            const hours = endTime - startTime;
+            return `${start} (${hours}节)`;
+        }
+
+        // 解析时间字符串
+        function parseTime(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                'upcoming': '即将开始',
+                'current': '进行中',
+                'past': '已结束'
+            };
+            return statusMap[status] || '未知';
+        }
+
+        // 更新课程状态
+        function updateCourseStatus() {
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const currentDay = now.getDay();
+            const currentWeek = getCurrentWeek();
+
+            currentCourses.forEach(course => {
+                const [start, end] = course.time.split(' - ');
+                const startTime = parseTime(start);
+                const endTime = parseTime(end);
+
+                if (currentMinutes < startTime) {
+                    course.status = 'upcoming';
+                } else if (currentMinutes >= startTime && currentMinutes < endTime) {
+                    course.status = 'current';
+                } else {
+                    course.status = 'past';
+                }
+            });
+
+            // 更新UI
+            currentCourses.forEach(course => {
+                const statusEl = document.getElementById(`status-${course.id}`);
+                if (statusEl) {
+                    statusEl.className = `schedule-status ${course.status}`;
+                    statusEl.textContent = getStatusText(course.status);
+                }
+            });
+
+            // 保存状态
+            localStorage.setItem('courses', JSON.stringify(currentCourses));
+        }
+
+        // 获取当前周数（简化版）
+        function getCurrentWeek() {
+            const now = new Date();
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay() + 1);
+
+            const diff = Math.floor((now - startOfWeek) / (1000 * 60 * 60 * 24));
+            return diff + 1;
+        }
+
+        // 开始通知检查
+        function startNotificationCheck() {
+            // 每分钟检查一次
+            setInterval(() => {
+                checkNotifications();
+            }, 60000);
+
+            // 立即检查一次
+            checkNotifications();
+        }
+
+        // 检查通知
+        function checkNotifications() {
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            // 查找即将开始的课程（12小时内）
+            currentCourses.forEach(course => {
+                const [start, end] = course.time.split(' - ');
+                const startTime = parseTime(start);
+
+                // 如果课程在12小时内开始
+                if (startTime - currentMinutes <= 720 && startTime - currentMinutes > 0) {
+                    // 检查是否已经通知过
+                    const notificationKey = `notified-${course.id}-${now.toDateString()}`;
+                    if (!localStorage.getItem(notificationKey)) {
+                        showCountdownModal(course, startTime - currentMinutes);
+                        localStorage.setItem(notificationKey, 'true');
+                    }
+                }
+            });
+        }
+
+        // 显示倒计时弹窗
+        function showCountdownModal(course, minutesUntil) {
+            clearInterval(countdownInterval);
+
+            document.getElementById('countdownCourseTitle').textContent = course.subject;
+            document.getElementById('countdownTeacher').textContent = `👨‍🏫 ${course.teacher}`;
+            document.getElementById('countdownLocation').textContent = `📍 ${course.location}`;
+
+            countdownModal.classList.add('active');
+            updateCountdown(minutesUntil);
+
+            countdownInterval = setInterval(() => {
+                minutesUntil--;
+                if (minutesUntil <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownModal.classList.remove('active');
+                    return;
+                }
+                updateCountdown(minutesUntil);
+            }, 60000);
+        }
+
+        // 更新倒计时
+        function updateCountdown(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            document.getElementById('countdownTimer').textContent =
+                `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:00`;
+        }
+
+        // 关闭倒计时弹窗
+        document.getElementById('closeCountdown').addEventListener('click', () => {
+            countdownModal.classList.remove('active');
+            clearInterval(countdownInterval);
+        });
+
+        // 刷新按钮
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            loadCourses();
+            updateCourseStatus();
+            renderSemesterSchedule();
+            showToast('已刷新课程信息', 'success');
+        });
+
+        // 视图切换
+        todayTab.addEventListener('click', () => {
+            currentView = 'today';
+            todayTab.classList.add('active');
+            semesterTab.classList.remove('active');
+            viewTitle.textContent = '今日课程';
+            scheduleGrid.style.display = 'grid';
+            emptyState.style.display = currentCourses.length === 0 ? 'block' : 'none';
+            semesterView.style.display = 'none';
+        });
+
+        semesterTab.addEventListener('click', () => {
+            currentView = 'semester';
+            semesterTab.classList.add('active');
+            todayTab.classList.remove('active');
+            viewTitle.textContent = '学期课表';
+            scheduleGrid.style.display = 'none';
+            emptyState.style.display = 'none';
+            semesterView.classList.add('active');
+            renderSemesterSchedule();
+        });
+
+        // 退出按钮
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('courses');
+            currentCourses = [];
+            clearInterval(countdownInterval);
+            showLoginScreen();
+            showToast('已退出登录', 'success');
+        });
+
+        // 显示提示
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 检查浏览器通知权限
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showToast('已启用桌面通知', 'success');
+                    }
+                });
+            }
+        }
+
+        // 页面可见性变化时检查通知
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                checkNotifications();
+            }
+        });
+    </script>
+</body>
+</html>
